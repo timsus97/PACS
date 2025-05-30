@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход в систему - Klinika Pro PACS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 180px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 24px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #2a5298;
+        }
+
+        .button {
+            width: 100%;
+            padding: 12px;
+            background: #2a5298;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .button:hover {
+            background: #1e3c72;
+        }
+
+        .button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo-container">
+            <h2 style="color: #2a5298; font-size: 32px; margin-bottom: 5px;">Klinika Pro</h2>
+            <p style="color: #666;">PACS System</p>
+        </div>
+        
+        <h1>Вход в систему</h1>
+        
+        <div id="errorMessage" class="error-message"></div>
+        <div id="successMessage" class="success-message"></div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Имя пользователя</label>
+                <input type="text" id="username" name="username" required autocomplete="username">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Пароль</label>
+                <input type="password" id="password" name="password" required autocomplete="current-password">
+            </div>
+            
+            <button type="submit" class="button" id="submitButton">
+                Войти
+            </button>
+        </form>
+        
+        <div class="footer">
+            © 2024 Klinika Pro. Все права защищены.
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = window.location.protocol + '//' + window.location.hostname;
+        const LOGIN_ENDPOINT = API_BASE_URL + '/api/login';
+        const OHIF_URL = API_BASE_URL + '/';
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const submitButton = document.getElementById('submitButton');
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+            
+            // Reset messages
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+            
+            // Disable button and show loading
+            submitButton.disabled = true;
+            submitButton.innerHTML = 'Вход... <span class="loading"></span>';
+            
+            try {
+                const response = await fetch(LOGIN_ENDPOINT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // Store token and user info
+                    localStorage.setItem('jwt_token', data.token);
+                    localStorage.setItem('user_roles', JSON.stringify(data.roles));
+                    localStorage.setItem('username', data.username);
+                    
+                    // Show success message
+                    successMessage.textContent = 'Вход выполнен успешно. Перенаправление...';
+                    successMessage.style.display = 'block';
+                    
+                    // Redirect to OHIF Viewer
+                    setTimeout(() => {
+                        window.location.href = OHIF_URL;
+                    }, 1000);
+                } else {
+                    errorMessage.textContent = data.message || 'Неверное имя пользователя или пароль';
+                    errorMessage.style.display = 'block';
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Войти';
+                }
+            } catch (error) {
+                errorMessage.textContent = 'Ошибка подключения к серверу. Попробуйте позже.';
+                errorMessage.style.display = 'block';
+                submitButton.disabled = false;
+                submitButton.textContent = 'Войти';
+                console.error('Login error:', error);
+            }
+        });
+
+        // Check if already logged in
+        const token = localStorage.getItem('jwt_token');
+        if (token) {
+            // Optionally validate token or redirect immediately
+            document.getElementById('successMessage').textContent = 'Вы уже авторизованы. Перенаправление...';
+            document.getElementById('successMessage').style.display = 'block';
+            setTimeout(() => {
+                window.location.href = OHIF_URL;
+            }, 1000);
+        }
+    </script>
+</body>
+</html> 

@@ -1,0 +1,114 @@
+version: '3.8'
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.1
+    container_name: pacs_elasticsearch
+    hostname: elasticsearch
+    environment:
+      - node.name=elasticsearch
+      - cluster.name=pacs-logging
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - xpack.security.enabled=false
+      - xpack.security.enrollment.enabled=false
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elastic_data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - elk_network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.11.1
+    container_name: pacs_logstash
+    hostname: logstash
+    volumes:
+      - ./config/logstash/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+      - ./config/logstash/pipeline:/usr/share/logstash/pipeline:ro
+      - ./logs:/logs:ro
+    ports:
+      - "5044:5044"
+      - "5000:5000/tcp"
+      - "5000:5000/udp"
+      - "9600:9600"
+    environment:
+      LS_JAVA_OPTS: "-Xmx512m -Xms512m"
+    networks:
+      - elk_network
+      - pacs_internal_net
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    restart: unless-stopped
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.1
+    container_name: pacs_kibana
+    hostname: kibana
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      ELASTICSEARCH_HOSTS: '["http://elasticsearch:9200"]'
+      SERVER_HOST: "0.0.0.0"
+      SERVER_NAME: "pacs-kibana"
+      XPACK_SECURITY_ENABLED: "false"
+    networks:
+      - elk_network
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5601/api/status || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:8.11.1
+    container_name: pacs_filebeat
+    hostname: filebeat
+    user: root
+    volumes:
+      - ./config/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./logs:/logs:ro
+      - filebeat_data:/usr/share/filebeat/data
+    environment:
+      - ELASTICSEARCH_HOST=elasticsearch:9200
+      - KIBANA_HOST=kibana:5601
+    networks:
+      - elk_network
+      - pacs_internal_net
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    restart: unless-stopped
+    command: filebeat -e -strict.perms=false
+
+volumes:
+  elastic_data:
+    driver: local
+  filebeat_data:
+    driver: local
+
+networks:
+  elk_network:
+    driver: bridge
+  pacs_internal_net:
+    external: true 

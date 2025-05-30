@@ -1,0 +1,76 @@
+{
+  "Name": "Orthanc PACS Klinika Pro",
+  "StorageDirectory": "/var/lib/orthanc/db",
+  "IndexDirectory": "/var/lib/orthanc/db",
+  "StorageCompression": true,
+  "MaximumStorageSize": 0,
+  "MaximumPatientCount": 0,
+  "HttpPort": 8042,
+  "HttpDescribeErrors": true,
+  "HttpCorsAllowOrigin": "*",
+  "HttpCorsAllowHeaders": "Origin, Accept, Content-Type, Authorization, X-Requested-With",
+  "HttpTraceEnabled": false,
+  "DicomAet": "ORTHANC_KP",
+  "DicomPort": 4242,
+  "DicomCheckModalityHost": false,
+  "DicomScpTimeout": 60,
+  "StrictAetComparison": false,
+  "RemoteAccessAllowed": true,
+  "AuthenticationEnabled": false,
+  "RegisteredUsers": {},
+  "ConcurrentJobs": 4,
+  "Plugins": [
+    "/usr/share/orthanc/plugins/libOrthancDicomWeb.so",
+    "/usr/share/orthanc/plugins/libOrthancPostgreSQL.so",
+    "/usr/share/orthanc/plugins/libOrthancAuthorization.so"
+  ],
+  "DicomWeb": {
+    "Enable": true,
+    "Root": "/dicom-web/",
+    "EnableWado": true,
+    "WadoRoot": "/wado",
+    "SslEnabled": false,
+    "StowMaxConnections": 10,
+    "StowTimeout": 60
+  },
+  "PostgreSQL": {
+    "EnableStorage": true,
+    "EnableIndex": true,
+    "EnableSearch": true,
+    "IndexConnections": 5,
+    "StorageConnections": 5,
+    "Port": 5432,
+    "Host": "db_pacs",
+    "Database": "orthanc",
+    "Username": "orthanc_user",
+    "Lock": true
+  },
+  "Authorization": {
+    "Plugin": "/usr/share/orthanc/plugins/libOrthancAuthorization.so",
+    "Service": "http://pacs_flask_auth:5000/auth",
+    "Permissive": false,
+    "PeerDicomWeb": true,
+    "InjectedHeaders": {
+        "X-Orthanc-Username": "{Username}",
+        "X-Orthanc-Roles": "{Roles}"
+    }
+  },
+  "StorageCommitmentScp": {
+    "Aet": "ORTHANC_SCU",
+    "Port": 12345
+  },
+  "ImageQuality": {
+     "EnableLzmaCompression": true,
+     "EnableJpegCompression": true,
+     "EnableJpegLsCompression": true,
+     "EnableDeflateCompression": true,
+     "JpegQuality": 75,
+     "WorkAroundWrongBitPixel": true
+  },
+  "LuaScripts": [],
+  "UserMetadata": {},
+  "UserDefinedTags": {},
+  "DefaultEncoding": "Latin1",
+  "TranscodeDicomImages": true,
+  "UnknownSopClassAccepted": true
+} 

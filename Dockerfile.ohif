@@ -1,0 +1,36 @@
+FROM ohif/app:v3.7.0
+
+# Switch to root to modify files
+USER root
+
+# Create necessary directories
+RUN mkdir -p /usr/share/nginx/html/extensions /usr/share/nginx/html/assets
+
+# Create a directory for temporary config files
+RUN mkdir -p /usr/share/nginx/html/config
+
+# Copy custom Nginx configuration
+COPY config/ohif/nginx.conf /etc/nginx/nginx.conf
+
+# Set proper permissions
+RUN chown -R nginx:nginx /usr/share/nginx/html && \
+    chmod -R 755 /usr/share/nginx/html && \
+    chown -R nginx:nginx /var/log/nginx && \
+    chmod -R 755 /var/log/nginx && \
+    chown -R nginx:nginx /var/cache/nginx && \
+    chmod -R 755 /var/cache/nginx && \
+    touch /var/run/nginx.pid && \
+    chown nginx:nginx /var/run/nginx.pid
+
+# Copy entrypoint script
+COPY scripts/ohif-entrypoint.sh /usr/local/bin/ohif-entrypoint.sh
+RUN chmod +x /usr/local/bin/ohif-entrypoint.sh
+
+# Switch back to nginx user
+USER nginx
+
+# Expose port
+EXPOSE 80
+
+# Set the entrypoint
+ENTRYPOINT ["/usr/local/bin/ohif-entrypoint.sh"] 

@@ -1,0 +1,166 @@
+version: '3.8'
+
+services:
+  # Prometheus for metrics collection
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: pacs_prometheus
+    hostname: prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=30d'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    volumes:
+      - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./config/prometheus/alerts.yml:/etc/prometheus/alerts.yml:ro
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - monitoring_network
+      - pacs_internal_net
+    restart: unless-stopped
+
+  # Grafana for visualization
+  grafana:
+    image: grafana/grafana:latest
+    container_name: pacs_grafana
+    hostname: grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SERVER_ROOT_URL=https://monitoring.klinika-pro.ru
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource
+    volumes:
+      - ./config/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./config/grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana_data:/var/lib/grafana
+    ports:
+      - "3001:3000"
+    networks:
+      - monitoring_network
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+
+  # Node Exporter for system metrics
+  node_exporter:
+    image: prom/node-exporter:latest
+    container_name: pacs_node_exporter
+    hostname: node_exporter
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--path.rootfs=/rootfs'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    ports:
+      - "9100:9100"
+    networks:
+      - monitoring_network
+    restart: unless-stopped
+
+  # PostgreSQL Exporter
+  postgres_exporter:
+    image: wrouesnel/postgres_exporter:latest
+    container_name: pacs_postgres_exporter
+    hostname: postgres_exporter
+    environment:
+      DATA_SOURCE_NAME: "postgresql://${POSTGRES_USER:-orthanc_user}:${POSTGRES_PASSWORD:-password}@db_pacs:5432/${POSTGRES_DB:-orthanc}?sslmode=disable"
+    ports:
+      - "9187:9187"
+    networks:
+      - monitoring_network
+      - pacs_internal_net
+    restart: unless-stopped
+
+  # Nginx Exporter
+  nginx_exporter:
+    image: nginx/nginx-prometheus-exporter:latest
+    container_name: pacs_nginx_exporter
+    hostname: nginx_exporter
+    command:
+      - '-nginx.scrape-uri=http://nginx:8080/nginx_status'
+    ports:
+      - "9113:9113"
+    networks:
+      - monitoring_network
+      - pacs_internal_net
+    restart: unless-stopped
+
+  # cAdvisor for container metrics
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: pacs_cadvisor
+    hostname: cadvisor
+    privileged: true
+    devices:
+      - /dev/kmsg:/dev/kmsg
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
+      - /cgroup:/cgroup:ro
+    ports:
+      - "8080:8080"
+    networks:
+      - monitoring_network
+    restart: unless-stopped
+
+  # AlertManager for handling alerts
+  alertmanager:
+    image: prom/alertmanager:latest
+    container_name: pacs_alertmanager
+    hostname: alertmanager
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+      - '--storage.path=/alertmanager'
+    volumes:
+      - ./config/alertmanager/config.yml:/etc/alertmanager/config.yml:ro
+      - alertmanager_data:/alertmanager
+    ports:
+      - "9093:9093"
+    networks:
+      - monitoring_network
+    restart: unless-stopped
+
+  # Custom PACS metrics exporter
+  pacs_exporter:
+    build:
+      context: ./monitoring/pacs_exporter
+      dockerfile: Dockerfile
+    container_name: pacs_pacs_exporter
+    hostname: pacs_exporter
+    environment:
+      ORTHANC_URL: http://orthanc:8042
+      ORTHANC_USERNAME: ${ORTHANC_USERNAME:-admin_pacs}
+      ORTHANC_PASSWORD: ${ORTHANC_PASSWORD:-password}
+      FLASK_AUTH_URL: http://flask_auth_service:5000
+    ports:
+      - "9200:9200"
+    networks:
+      - monitoring_network
+      - pacs_internal_net
+    restart: unless-stopped
+
+volumes:
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+  alertmanager_data:
+    driver: local
+
+networks:
+  monitoring_network:
+    driver: bridge
+  pacs_internal_net:
+    external: true 

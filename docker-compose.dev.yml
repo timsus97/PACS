@@ -1,0 +1,80 @@
+version: '3.8'
+
+# Development environment overrides
+services:
+  db_pacs:
+    ports:
+      - "5432:5432" # Expose PostgreSQL for development tools
+    environment:
+      POSTGRES_PASSWORD: dev_password # Simple password for dev
+
+  orthanc:
+    ports:
+      - "8042:8042" # Direct access to Orthanc for testing
+      - "4242:4242" # DICOM port for direct uploads
+    environment:
+      ORTHANC__REGISTERED_USERS: '{"dev": "dev"}' # Simple auth for dev
+      ORTHANC__VERBOSE_HTTP: "true"
+      ORTHANC__VERBOSE_DICOM: "true"
+      ORTHANC__VERBOSE_PLUGINS: "true"
+    volumes:
+      - ./config/orthanc/orthanc.dev.json:/etc/orthanc/orthanc.json:ro
+
+  flask_auth_service:
+    build:
+      context: ./flask_auth_service
+      dockerfile: Dockerfile.dev # Development Dockerfile with hot reload
+    environment:
+      FLASK_ENV: development
+      FLASK_DEBUG: 1
+      SECRET_KEY: dev_secret_key
+      JWT_SECRET_KEY: dev_jwt_secret
+    ports:
+      - "5000:5000" # Direct access to Flask for debugging
+    volumes:
+      - ./flask_auth_service:/app # Mount source code for hot reload
+    command: flask run --host=0.0.0.0 --reload
+
+  ohif_viewer:
+    ports:
+      - "3000:3000" # Direct access to OHIF
+    environment:
+      NODE_ENV: development
+    volumes:
+      - ./config/ohif:/usr/share/nginx/html/config:ro # Mount all config files
+
+  nginx:
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./config/nginx/nginx.dev.conf:/etc/nginx/nginx.conf:ro
+      - ./config/ssl/dev:/etc/nginx/ssl:ro # Development SSL certificates
+
+  # Development tools
+  adminer:
+    image: adminer:latest
+    container_name: pacs_adminer
+    ports:
+      - "8080:8080"
+    networks:
+      - pacs_internal_net
+    environment:
+      ADMINER_DEFAULT_SERVER: db_pacs
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: pacs_mailhog
+    ports:
+      - "1025:1025" # SMTP server
+      - "8025:8025" # Web UI
+    networks:
+      - pacs_internal_net
+
+# Override network for development
+networks:
+  pacs_internal_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.25.0.0/24 

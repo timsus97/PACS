@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Report Button</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #1e1e1e; color: white; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #333; background: #2a2a2a; }
+        button { margin: 5px; padding: 10px 15px; background: #2a5298; color: white; border: none; cursor: pointer; }
+        pre { background: #000; color: #0f0; padding: 10px; overflow: auto; }
+    </style>
+</head>
+<body>
+    <h1>Диагностика кнопки отчетов</h1>
+    
+    <div class="test-section">
+        <h3>1. Проверка JWT токена</h3>
+        <button onclick="checkJWT()">Проверить JWT</button>
+        <pre id="jwt-result"></pre>
+    </div>
+    
+    <div class="test-section">
+        <h3>2. Проверка загрузки расширения</h3>
+        <button onclick="checkExtension()">Проверить расширение</button>
+        <pre id="extension-result"></pre>
+    </div>
+    
+    <div class="test-section">
+        <h3>3. Создать тестовую кнопку</h3>
+        <button onclick="createTestButton()">Создать кнопку</button>
+        <pre id="button-result"></pre>
+    </div>
+    
+    <div class="test-section">
+        <h3>4. Установить тестовый JWT</h3>
+        <button onclick="setTestJWT()">Установить админский JWT</button>
+        <pre id="set-jwt-result"></pre>
+    </div>
+
+    <script>
+        function checkJWT() {
+            const result = document.getElementById('jwt-result');
+            const token = localStorage.getItem('jwt_token');
+            
+            if (!token) {
+                result.textContent = 'JWT токен не найден в localStorage';
+                return;
+            }
+            
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                result.textContent = `JWT найден:\nПользователь: ${payload.user}\nРоли: ${JSON.stringify(payload.roles)}\nИстекает: ${new Date(payload.exp * 1000).toLocaleString()}`;
+            } catch (e) {
+                result.textContent = `Ошибка парсинга JWT: ${e.message}`;
+            }
+        }
+        
+        function checkExtension() {
+            const result = document.getElementById('extension-result');
+            
+            if (typeof window.DoctorReportExtension === 'undefined') {
+                result.textContent = 'DoctorReportExtension не загружен. Попробуем загрузить...';
+                
+                const script = document.createElement('script');
+                script.src = '/config/ohif/doctor-report-extension.js';
+                script.onload = () => {
+                    result.textContent += '\nРасширение загружено! Проверяем права...';
+                    if (window.DoctorReportExtension.hasPermission()) {
+                        result.textContent += '\n✅ У пользователя есть права для просмотра отчетов';
+                    } else {
+                        result.textContent += '\n❌ У пользователя нет прав для просмотра отчетов';
+                    }
+                };
+                script.onerror = () => {
+                    result.textContent += '\n❌ Ошибка загрузки расширения';
+                };
+                document.head.appendChild(script);
+            } else {
+                result.textContent = 'DoctorReportExtension уже загружен!\n';
+                if (window.DoctorReportExtension.hasPermission()) {
+                    result.textContent += '✅ У пользователя есть права для просмотра отчетов';
+                } else {
+                    result.textContent += '❌ У пользователя нет прав для просмотра отчетов';
+                }
+            }
+        }
+        
+        function createTestButton() {
+            const result = document.getElementById('button-result');
+            
+            // Remove existing test button
+            const existing = document.getElementById('doctor-report-floating-btn');
+            if (existing) existing.remove();
+            
+            // Create floating button
+            const floatingButton = document.createElement('button');
+            floatingButton.id = 'doctor-report-floating-btn';
+            floatingButton.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 18px;">📋</span>
+                    <span>Заключение</span>
+                </div>
+            `;
+            floatingButton.style.cssText = `
+                position: fixed;
+                top: 50%;
+                right: 30px;
+                z-index: 99999;
+                background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
+                color: white;
+                border: none;
+                padding: 16px 20px;
+                border-radius: 50px;
+                cursor: pointer;
+                font-size: 14px;
+                font-weight: bold;
+                box-shadow: 0 8px 25px rgba(42, 82, 152, 0.4);
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                transform: translateY(-50%);
+                backdrop-filter: blur(10px);
+                border: 2px solid rgba(255, 255, 255, 0.1);
+                min-width: 140px;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            `;
+            
+            floatingButton.addEventListener('click', () => {
+                alert('Тестовая кнопка отчетов работает!');
+            });
+            
+            document.body.appendChild(floatingButton);
+            result.textContent = '✅ Тестовая кнопка создана и должна быть видна справа';
+        }
+        
+        function setTestJWT() {
+            const result = document.getElementById('set-jwt-result');
+            
+            // Create a test JWT token for admin user
+            const header = btoa(JSON.stringify({
+                "typ": "JWT",
+                "alg": "HS256"
+            }));
+            
+            const payload = btoa(JSON.stringify({
+                "user": "admin",
+                "roles": ["admin", "doctor"],
+                "exp": Math.floor(Date.now() / 1000) + (24 * 60 * 60) // 24 hours
+            }));
+            
+            // This is a dummy signature - in real app it would be properly signed
+            const signature = "dummy_signature_for_testing";
+            
+            const testToken = `${header}.${payload}.${signature}`;
+            
+            localStorage.setItem('jwt_token', testToken);
+            localStorage.setItem('user_roles', JSON.stringify(['admin', 'doctor']));
+            localStorage.setItem('username', 'admin');
+            
+            result.textContent = '✅ Тестовый JWT установлен с ролями admin и doctor\nТеперь проверьте права доступа к отчетам';
+        }
+    </script>
+</body>
+</html> 

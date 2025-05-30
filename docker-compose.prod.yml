@@ -1,0 +1,164 @@
+version: '3.8'
+
+# Production environment overrides
+services:
+  db_pacs:
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 2G
+    environment:
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+      POSTGRES_INITDB_ARGS: "--data-checksums"
+      # Performance tuning
+      POSTGRES_MAX_CONNECTIONS: 200
+      POSTGRES_SHARED_BUFFERS: 1GB
+      POSTGRES_EFFECTIVE_CACHE_SIZE: 3GB
+      POSTGRES_MAINTENANCE_WORK_MEM: 256MB
+    secrets:
+      - postgres_password
+    volumes:
+      - pacs_db_data:/var/lib/postgresql/data
+      - ./backups/postgres:/backup # For pg_dump backups
+
+  orthanc:
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 8G
+        reservations:
+          cpus: '2'
+          memory: 4G
+    environment:
+      ORTHANC__STABLE_AGE: 60
+      ORTHANC__LIMIT_FIND_RESULTS: 100
+      ORTHANC__LIMIT_FIND_INSTANCES: 100
+      ORTHANC__MAXIMUM_STORAGE_SIZE: 0 # No limit in production
+      ORTHANC__MAXIMUM_PATIENT_COUNT: 0 # No limit in production
+      ORTHANC__CONCURRENT_JOBS: 4
+      ORTHANC__SAVE_JOBS: true
+      ORTHANC__JOBS_ENGINE_THREADS_COUNT: 8
+    volumes:
+      - ./config/orthanc/orthanc.prod.json:/etc/orthanc/orthanc.json:ro
+      - pacs_orthanc_data:/var/lib/orthanc/db
+      - /mnt/nas/dicom:/var/lib/orthanc/storage # External NAS storage
+
+  flask_auth_service:
+    restart: always
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    environment:
+      FLASK_ENV: production
+      FLASK_DEBUG: 0
+      SECRET_KEY_FILE: /run/secrets/flask_secret_key
+      JWT_SECRET_KEY_FILE: /run/secrets/jwt_secret_key
+      WORKERS: 4 # Gunicorn workers
+    secrets:
+      - flask_secret_key
+      - jwt_secret_key
+    volumes:
+      - pacs_flask_auth_data:/app/data
+      - ./logs/flask_auth:/var/log/flask_auth
+    command: gunicorn --workers 4 --bind 0.0.0.0:5000 --timeout 120 --access-logfile - --error-logfile - app:app
+
+  ohif_viewer:
+    restart: always
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: '1'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 1G
+    environment:
+      NODE_ENV: production
+    volumes:
+      - ./config/ohif/app-config.prod.js:/usr/share/nginx/html/app-config.js:ro
+
+  nginx:
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '1'
+          memory: 1G
+    volumes:
+      - ./config/nginx/nginx.prod.conf:/etc/nginx/nginx.conf:ro
+      - ./config/ssl/prod:/etc/nginx/ssl:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro # Let's Encrypt certificates
+      - ./logs/nginx:/var/log/nginx
+    depends_on:
+      - orthanc
+      - ohif_viewer
+      - flask_auth_service
+
+  # Redis for caching and sessions
+  redis:
+    image: redis:7-alpine
+    container_name: pacs_redis
+    restart: always
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    networks:
+      - pacs_internal_net
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+
+# Production volumes
+volumes:
+  pacs_db_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /mnt/ssd/pacs/postgres
+  pacs_orthanc_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /mnt/ssd/pacs/orthanc
+  pacs_flask_auth_data:
+    driver: local
+  redis_data:
+    driver: local
+
+# Docker secrets for production
+secrets:
+  postgres_password:
+    external: true
+  flask_secret_key:
+    external: true
+  jwt_secret_key:
+    external: true
+
+# Production network with encryption
+networks:
+  pacs_internal_net:
+    driver: overlay
+    driver_opts:
+      encrypted: "true"
+    attachable: true 

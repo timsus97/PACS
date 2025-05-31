@@ -1,0 +1,161 @@
+<svg width="1400" height="900" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1400" height="900" fill="#1a1a1a"/>
+  
+  <!-- Header -->
+  <rect x="0" y="0" width="1400" height="60" fill="#2c3e50"/>
+  <text x="20" y="35" font-family="Arial, sans-serif" font-size="18" fill="white" font-weight="bold">🏗️ Clinton Medical PACS - System Architecture</text>
+  <text x="1200" y="35" font-family="Arial, sans-serif" font-size="14" fill="#3498db">Docker Compose Orchestration</text>
+  
+  <!-- Internet Layer -->
+  <rect x="50" y="100" width="1300" height="60" fill="#34495e" rx="5"/>
+  <text x="700" y="130" font-family="Arial, sans-serif" font-size="16" fill="#3498db" font-weight="bold" text-anchor="middle">🌐 Internet / External Users</text>
+  <text x="200" y="145" font-family="Arial, sans-serif" font-size="12" fill="white">👨‍⚕️ Doctors</text>
+  <text x="400" y="145" font-family="Arial, sans-serif" font-size="12" fill="white">👨‍💼 Admins</text>
+  <text x="600" y="145" font-family="Arial, sans-serif" font-size="12" fill="white">👨‍💻 Operators</text>
+  <text x="1000" y="145" font-family="Arial, sans-serif" font-size="12" fill="white">📱 Mobile Devices</text>
+  
+  <!-- SSL/HTTPS Layer -->
+  <rect x="50" y="180" width="1300" height="40" fill="#27ae60" rx="3"/>
+  <text x="700" y="205" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="bold" text-anchor="middle">🔒 SSL/TLS Encryption (HTTPS:443)</text>
+  
+  <!-- Nginx Reverse Proxy -->
+  <rect x="50" y="240" width="1300" height="80" fill="#e67e22" rx="5"/>
+  <text x="700" y="270" font-family="Arial, sans-serif" font-size="16" fill="white" font-weight="bold" text-anchor="middle">🔄 Nginx Reverse Proxy</text>
+  <text x="200" y="290" font-family="Arial, sans-serif" font-size="12" fill="white">• SSL Termination</text>
+  <text x="450" y="290" font-family="Arial, sans-serif" font-size="12" fill="white">• Load Balancing</text>
+  <text x="700" y="290" font-family="Arial, sans-serif" font-size="12" fill="white">• Security Headers</text>
+  <text x="950" y="290" font-family="Arial, sans-serif" font-size="12" fill="white">• CORS Handling</text>
+  <text x="200" y="305" font-family="Arial, sans-serif" font-size="12" fill="white">• Route Management</text>
+  <text x="450" y="305" font-family="Arial, sans-serif" font-size="12" fill="white">• Rate Limiting</text>
+  <text x="700" y="305" font-family="Arial, sans-serif" font-size="12" fill="white">• Compression</text>
+  <text x="950" y="305" font-family="Arial, sans-serif" font-size="12" fill="white">• Caching</text>
+  
+  <!-- Service Layer -->
+  <text x="700" y="360" font-family="Arial, sans-serif" font-size="16" fill="#3498db" font-weight="bold" text-anchor="middle">Microservices Architecture</text>
+  
+  <!-- OHIF Viewer -->
+  <rect x="50" y="380" width="300" height="200" fill="#3498db" rx="10"/>
+  <text x="200" y="410" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="bold" text-anchor="middle">🖥️ OHIF Viewer v3.8.0</text>
+  <text x="200" y="430" font-family="Arial, sans-serif" font-size="12" fill="#ecf0f1" text-anchor="middle">Port: 3000 → /</text>
+  
+  <text x="70" y="450" font-family="Arial, sans-serif" font-size="11" fill="white">📋 Study List Interface</text>
+  <text x="70" y="465" font-family="Arial, sans-serif" font-size="11" fill="white">🔬 DICOM Image Viewer</text>
+  <text x="70" y="480" font-family="Arial, sans-serif" font-size="11" fill="white">📏 Measurement Tools</text>
+  <text x="70" y="495" font-family="Arial, sans-serif" font-size="11" fill="white">👨‍⚕️ Doctor's Reports Panel</text>
+  <text x="70" y="510" font-family="Arial, sans-serif" font-size="11" fill="white">🌍 Multi-language Support</text>
+  <text x="70" y="525" font-family="Arial, sans-serif" font-size="11" fill="white">📄 PDF Export System</text>
+  <text x="70" y="540" font-family="Arial, sans-serif" font-size="11" fill="white">🎨 Custom React Components</text>
+  <text x="70" y="555" font-family="Arial, sans-serif" font-size="11" fill="white">⚡ 1900+ lines customizations</text>
+  
+  <!-- Flask Auth Service -->
+  <rect x="400" y="380" width="300" height="200" fill="#9b59b6" rx="10"/>
+  <text x="550" y="410" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="bold" text-anchor="middle">🔐 Flask Auth Service</text>
+  <text x="550" y="430" font-family="Arial, sans-serif" font-size="12" fill="#ecf0f1" text-anchor="middle">Port: 5001 → /api</text>
+  
+  <text x="420" y="450" font-family="Arial, sans-serif" font-size="11" fill="white">🔑 JWT Authentication</text>
+  <text x="420" y="465" font-family="Arial, sans-serif" font-size="11" fill="white">👥 Role-Based Access Control</text>
+  <text x="420" y="480" font-family="Arial, sans-serif" font-size="11" fill="white">📊 User Management API</text>
+  <text x="420" y="495" font-family="Arial, sans-serif" font-size="11" fill="white">🕒 Session Handling</text>
+  <text x="420" y="510" font-family="Arial, sans-serif" font-size="11" fill="white">📝 Audit Logging</text>
+  <text x="420" y="525" font-family="Arial, sans-serif" font-size="11" fill="white">🛡️ Security Middleware</text>
+  <text x="420" y="540" font-family="Arial, sans-serif" font-size="11" fill="white">🔗 PostgreSQL Integration</text>
+  <text x="420" y="555" font-family="Arial, sans-serif" font-size="11" fill="white">⚙️ Python Flask Framework</text>
+  
+  <!-- Orthanc DICOM Server -->
+  <rect x="750" y="380" width="300" height="200" fill="#e74c3c" rx="10"/>
+  <text x="900" y="410" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="bold" text-anchor="middle">🏥 Orthanc DICOM v24.10.1</text>
+  <text x="900" y="430" font-family="Arial, sans-serif" font-size="12" fill="#ecf0f1" text-anchor="middle">Port: 8042 → /orthanc</text>
+  
+  <text x="770" y="450" font-family="Arial, sans-serif" font-size="11" fill="white">📁 DICOM Storage & Management</text>
+  <text x="770" y="465" font-family="Arial, sans-serif" font-size="11" fill="white">🌐 DICOMweb REST API</text>
+  <text x="770" y="480" font-family="Arial, sans-serif" font-size="11" fill="white">🔌 Authorization Plugin</text>
+  <text x="770" y="495" font-family="Arial, sans-serif" font-size="11" fill="white">📊 PostgreSQL Plugin</text>
+  <text x="770" y="510" font-family="Arial, sans-serif" font-size="11" fill="white">🗜️ Compression Plugin</text>
+  <text x="770" y="525" font-family="Arial, sans-serif" font-size="11" fill="white">💾 Storage Commitment</text>
+  <text x="770" y="540" font-family="Arial, sans-serif" font-size="11" fill="white">🔍 DICOM Query/Retrieve</text>
+  <text x="770" y="555" font-family="Arial, sans-serif" font-size="11" fill="white">⚡ C++ High Performance</text>
+  
+  <!-- Monitoring -->
+  <rect x="1100" y="380" width="250" height="200" fill="#f39c12" rx="10"/>
+  <text x="1225" y="410" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="bold" text-anchor="middle">📊 Monitoring</text>
+  <text x="1225" y="430" font-family="Arial, sans-serif" font-size="12" fill="#ecf0f1" text-anchor="middle">Optional Services</text>
+  
+  <text x="1120" y="450" font-family="Arial, sans-serif" font-size="11" fill="white">📈 System Metrics</text>
+  <text x="1120" y="465" font-family="Arial, sans-serif" font-size="11" fill="white">📋 Health Checks</text>
+  <text x="1120" y="480" font-family="Arial, sans-serif" font-size="11" fill="white">🔔 Alerting</text>
+  <text x="1120" y="495" font-family="Arial, sans-serif" font-size="11" fill="white">📊 ELK Stack</text>
+  <text x="1120" y="510" font-family="Arial, sans-serif" font-size="11" fill="white">⏱️ Performance</text>
+  <text x="1120" y="525" font-family="Arial, sans-serif" font-size="11" fill="white">🗄️ Log Management</text>
+  <text x="1120" y="540" font-family="Arial, sans-serif" font-size="11" fill="white">📉 Resource Usage</text>
+  <text x="1120" y="555" font-family="Arial, sans-serif" font-size="11" fill="white">🚨 Error Tracking</text>
+  
+  <!-- Database Layer -->
+  <rect x="200" y="620" width="600" height="100" fill="#2c3e50" rx="10"/>
+  <text x="500" y="650" font-family="Arial, sans-serif" font-size="16" fill="#3498db" font-weight="bold" text-anchor="middle">🗄️ PostgreSQL Database Layer</text>
+  
+  <text x="250" y="675" font-family="Arial, sans-serif" font-size="12" fill="white">📊 User Management Database</text>
+  <text x="250" y="690" font-family="Arial, sans-serif" font-size="12" fill="white">🔐 Authentication & Sessions</text>
+  <text x="250" y="705" font-family="Arial, sans-serif" font-size="12" fill="white">👥 Roles & Permissions</text>
+  
+  <text x="550" y="675" font-family="Arial, sans-serif" font-size="12" fill="white">🏥 DICOM Metadata Index</text>
+  <text x="550" y="690" font-family="Arial, sans-serif" font-size="12" fill="white">📄 Doctor's Reports Storage</text>
+  <text x="550" y="705" font-family="Arial, sans-serif" font-size="12" fill="white">📈 Audit Logs & Statistics</text>
+  
+  <!-- Storage Layer -->
+  <rect x="850" y="620" width="500" height="100" fill="#27ae60" rx="10"/>
+  <text x="1100" y="650" font-family="Arial, sans-serif" font-size="16" fill="white" font-weight="bold" text-anchor="middle">💾 Storage & Volumes</text>
+  
+  <text x="870" y="675" font-family="Arial, sans-serif" font-size="12" fill="white">🗂️ DICOM Files Storage</text>
+  <text x="870" y="690" font-family="Arial, sans-serif" font-size="12" fill="white">📁 Docker Named Volumes</text>
+  <text x="870" y="705" font-family="Arial, sans-serif" font-size="12" fill="white">🔄 Automated Backups</text>
+  
+  <text x="1150" y="675" font-family="Arial, sans-serif" font-size="12" fill="white">🔒 SSL Certificates</text>
+  <text x="1150" y="690" font-family="Arial, sans-serif" font-size="12" fill="white">⚙️ Configuration Files</text>
+  <text x="1150" y="705" font-family="Arial, sans-serif" font-size="12" fill="white">📊 Log Files</text>
+  
+  <!-- Infrastructure Layer -->
+  <rect x="50" y="750" width="1300" height="80" fill="#34495e" rx="10"/>
+  <text x="700" y="780" font-family="Arial, sans-serif" font-size="16" fill="#3498db" font-weight="bold" text-anchor="middle">🐳 Docker Compose Infrastructure</text>
+  <text x="200" y="800" font-family="Arial, sans-serif" font-size="12" fill="white">🌐 Custom Networks</text>
+  <text x="400" y="800" font-family="Arial, sans-serif" font-size="12" fill="white">🔄 Auto-restart Policies</text>
+  <text x="700" y="800" font-family="Arial, sans-serif" font-size="12" fill="white">⚡ Health Checks</text>
+  <text x="950" y="800" font-family="Arial, sans-serif" font-size="12" fill="white">📊 Resource Limits</text>
+  <text x="200" y="815" font-family="Arial, sans-serif" font-size="12" fill="white">🔗 Service Discovery</text>
+  <text x="400" y="815" font-family="Arial, sans-serif" font-size="12" fill="white">⚙️ Environment Configuration</text>
+  <text x="700" y="815" font-family="Arial, sans-serif" font-size="12" fill="white">🔒 Secrets Management</text>
+  <text x="950" y="815" font-family="Arial, sans-serif" font-size="12" fill="white">📦 Volume Management</text>
+  
+  <!-- Connection Arrows -->
+  <!-- Internet to Nginx -->
+  <path d="M 700 160 L 700 240" stroke="#3498db" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+  
+  <!-- Nginx to Services -->
+  <path d="M 350 320 L 200 380" stroke="#e67e22" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <path d="M 550 320 L 550 380" stroke="#e67e22" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <path d="M 750 320 L 900 380" stroke="#e67e22" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  
+  <!-- Services to Database -->
+  <path d="M 550 580 L 500 620" stroke="#9b59b6" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <path d="M 900 580 L 600 620" stroke="#e74c3c" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  
+  <!-- Orthanc to Storage -->
+  <path d="M 1050 530 L 1100 620" stroke="#e74c3c" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  
+  <!-- Data Flow Labels -->
+  <text x="750" y="185" font-family="Arial, sans-serif" font-size="10" fill="#3498db" text-anchor="middle">HTTPS</text>
+  <text x="270" y="355" font-family="Arial, sans-serif" font-size="10" fill="#e67e22">HTTP</text>
+  <text x="580" y="355" font-family="Arial, sans-serif" font-size="10" fill="#e67e22">API</text>
+  <text x="830" y="355" font-family="Arial, sans-serif" font-size="10" fill="#e67e22">DICOM</text>
+  
+  <!-- Tech Stack Info -->
+  <rect x="50" y="850" width="1300" height="40" fill="#2c3e50" rx="5"/>
+  <text x="700" y="875" font-family="Arial, sans-serif" font-size="14" fill="#3498db" font-weight="bold" text-anchor="middle">🛠️ Technology Stack: React + Python Flask + C++ Orthanc + PostgreSQL + Nginx + Docker</text>
+  
+  <!-- Arrow marker definition -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#3498db"/>
+    </marker>
+  </defs>
+</svg> 

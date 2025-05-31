@@ -1,0 +1,81 @@
+<svg width="1000" height="700" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2c3e50;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a1a1a;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="1000" height="700" fill="url(#bgGradient)"/>
+  
+  <!-- Medical Background Pattern -->
+  <circle cx="100" cy="100" r="30" fill="none" stroke="#34495e" stroke-width="1" opacity="0.3"/>
+  <circle cx="900" cy="600" r="40" fill="none" stroke="#34495e" stroke-width="1" opacity="0.2"/>
+  <rect x="50" y="550" width="60" height="60" fill="none" stroke="#34495e" stroke-width="1" opacity="0.2" rx="5"/>
+  <rect x="850" y="50" width="80" height="80" fill="none" stroke="#34495e" stroke-width="1" opacity="0.2" rx="5"/>
+  
+  <!-- Main Login Container -->
+  <rect x="300" y="150" width="400" height="450" fill="#2c3e50" stroke="#3498db" stroke-width="2" rx="15"/>
+  
+  <!-- Header -->
+  <rect x="300" y="150" width="400" height="80" fill="#3498db" rx="15"/>
+  <rect x="300" y="215" width="400" height="15" fill="#3498db"/>
+  
+  <!-- Logo and Title -->
+  <circle cx="350" cy="190" r="25" fill="white"/>
+  <text x="350" y="200" font-family="Arial, sans-serif" font-size="20" fill="#3498db" text-anchor="middle" font-weight="bold">C</text>
+  <text x="390" y="185" font-family="Arial, sans-serif" font-size="18" fill="white" font-weight="bold">Clinton Medical</text>
+  <text x="390" y="205" font-family="Arial, sans-serif" font-size="14" fill="#ecf0f1">PACS System</text>
+  
+  <!-- Login Form -->
+  <text x="500" y="270" font-family="Arial, sans-serif" font-size="16" fill="#3498db" font-weight="bold" text-anchor="middle">Система Авторизации</text>
+  
+  <!-- Username Field -->
+  <text x="320" y="310" font-family="Arial, sans-serif" font-size="12" fill="#bdc3c7">Имя пользователя:</text>
+  <rect x="320" y="320" width="360" height="35" fill="#34495e" stroke="#3498db" stroke-width="1" rx="5"/>
+  <text x="330" y="342" font-family="Arial, sans-serif" font-size="14" fill="white">admin</text>
+  
+  <!-- Password Field -->
+  <text x="320" y="375" font-family="Arial, sans-serif" font-size="12" fill="#bdc3c7">Пароль:</text>
+  <rect x="320" y="385" width="360" height="35" fill="#34495e" stroke="#3498db" stroke-width="1" rx="5"/>
+  <text x="330" y="407" font-family="Arial, sans-serif" font-size="14" fill="white">••••••••</text>
+  
+  <!-- Role Selection -->
+  <text x="320" y="440" font-family="Arial, sans-serif" font-size="12" fill="#bdc3c7">Роль:</text>
+  <rect x="320" y="450" width="360" height="35" fill="#34495e" stroke="#3498db" stroke-width="1" rx="5"/>
+  <text x="330" y="472" font-family="Arial, sans-serif" font-size="14" fill="white">👨‍💼 Администратор</text>
+  <text x="650" y="472" font-family="Arial, sans-serif" font-size="12" fill="#3498db">▼</text>
+  
+  <!-- Login Button -->
+  <rect x="320" y="510" width="360" height="45" fill="#27ae60" stroke="#2ecc71" stroke-width="2" rx="8"/>
+  <text x="500" y="538" font-family="Arial, sans-serif" font-size="16" fill="white" font-weight="bold" text-anchor="middle">🔐 Войти в систему</text>
+  
+  <!-- Role Options Dropdown -->
+  <rect x="750" y="300" width="200" height="150" fill="#34495e" stroke="#3498db" stroke-width="1" rx="5"/>
+  <text x="760" y="320" font-family="Arial, sans-serif" font-size="12" fill="#3498db" font-weight="bold">Доступные роли:</text>
+  
+  <rect x="760" y="330" width="180" height="25" fill="#3498db" rx="3"/>
+  <text x="770" y="347" font-family="Arial, sans-serif" font-size="11" fill="white">👨‍💼 Администратор</text>
+  
+  <rect x="760" y="360" width="180" height="25" fill="#2c3e50" rx="3"/>
+  <text x="770" y="377" font-family="Arial, sans-serif" font-size="11" fill="white">👨‍⚕️ Врач</text>
+  
+  <rect x="760" y="390" width="180" height="25" fill="#2c3e50" rx="3"/>
+  <text x="770" y="407" font-family="Arial, sans-serif" font-size="11" fill="white">👨‍💻 Оператор</text>
+  
+  <text x="760" y="435" font-family="Arial, sans-serif" font-size="10" fill="#95a5a6">admin/admin</text>
+  <text x="760" y="450" font-family="Arial, sans-serif" font-size="10" fill="#95a5a6">doctor/doctor</text>
+  
+  <!-- Footer Info -->
+  <rect x="200" y="620" width="600" height="60" fill="#2c3e50" rx="5"/>
+  <text x="500" y="640" font-family="Arial, sans-serif" font-size="12" fill="#3498db" font-weight="bold" text-anchor="middle">🔐 Безопасная Аутентификация</text>
+  <text x="220" y="660" font-family="Arial, sans-serif" font-size="10" fill="#bdc3c7">• JWT токены • Ролевой доступ • SSL/TLS шифрование • Аудит логирование</text>
+  <text x="220" y="675" font-family="Arial, sans-serif" font-size="10" fill="#95a5a6">Версия: Clinton Medical PACS v1.0 | tavci57@gmail.com | @tr00x</text>
+  
+  <!-- Security Icons -->
+  <circle cx="150" cy="350" r="30" fill="#27ae60" opacity="0.8"/>
+  <text x="150" y="360" font-family="Arial, sans-serif" font-size="20" fill="white" text-anchor="middle">🔒</text>
+  
+  <circle cx="850" cy="350" r="30" fill="#e74c3c" opacity="0.8"/>
+  <text x="850" y="360" font-family="Arial, sans-serif" font-size="20" fill="white" text-anchor="middle">🛡️</text>
+</svg> 

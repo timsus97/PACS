@@ -1,0 +1,111 @@
+<svg width="1400" height="900" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1400" height="900" fill="#1a1a1a"/>
+  
+  <!-- Main Header -->
+  <rect x="0" y="0" width="1400" height="50" fill="#2c3e50"/>
+  <text x="20" y="30" font-family="Arial, sans-serif" font-size="16" fill="white" font-weight="bold">🏥 Clinton Medical PACS - OHIF Viewer</text>
+  <text x="1250" y="30" font-family="Arial, sans-serif" font-size="14" fill="#3498db">Doctor: admin</text>
+  
+  <!-- Left Sidebar - Study Browser -->
+  <rect x="0" y="50" width="200" height="850" fill="#2c3e50"/>
+  <text x="10" y="75" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="bold">Studies</text>
+  
+  <!-- Study Info -->
+  <rect x="10" y="90" width="180" height="120" fill="#34495e" rx="5"/>
+  <text x="20" y="110" font-family="Arial, sans-serif" font-size="12" fill="#3498db">29-May-2025</text>
+  <text x="20" y="130" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="bold">MR</text>
+  <text x="20" y="150" font-family="Arial, sans-serif" font-size="11" fill="#bdc3c7">Brain MRI with contrast</text>
+  <text x="20" y="170" font-family="Arial, sans-serif" font-size="11" fill="#2ecc71">📁 20 instances</text>
+  <text x="20" y="190" font-family="Arial, sans-serif" font-size="10" fill="#95a5a6">T1 MPRAGE SAG</text>
+  
+  <!-- Series Thumbnail -->
+  <rect x="55" y="220" width="90" height="90" fill="#34495e" stroke="#3498db" stroke-width="2" rx="3"/>
+  <text x="100" y="270" font-family="Arial, sans-serif" font-size="10" fill="#3498db" text-anchor="middle">📊 2/20</text>
+  
+  <!-- Main Viewer Area -->
+  <rect x="200" y="50" width="800" height="850" fill="#000000"/>
+  
+  <!-- Viewer Controls -->
+  <rect x="200" y="50" width="800" height="40" fill="#2c3e50"/>
+  <text x="220" y="75" font-family="Arial, sans-serif" font-size="14" fill="white">29-May-2025 | T1 MPRAGE SAG</text>
+  <text x="220" y="95" font-family="Arial, sans-serif" font-size="12" fill="#3498db">W: 3085 L: 1543</text>
+  <circle cx="950" cy="70" r="8" fill="#3498db"/>
+  <text x="950" y="75" font-family="Arial, sans-serif" font-size="10" fill="white" text-anchor="middle">🔍</text>
+  
+  <!-- DICOM Image Area -->
+  <rect x="250" y="120" width="700" height="650" fill="#1a1a1a" stroke="#3498db" stroke-width="1"/>
+  
+  <!-- Medical Image Simulation -->
+  <circle cx="600" cy="450" r="200" fill="none" stroke="#666" stroke-width="1" opacity="0.3"/>
+  <circle cx="600" cy="450" r="150" fill="none" stroke="#999" stroke-width="1" opacity="0.5"/>
+  <circle cx="600" cy="450" r="100" fill="none" stroke="#ccc" stroke-width="1" opacity="0.7"/>
+  <text x="300" y="140" font-family="Arial, sans-serif" font-size="12" fill="#3498db">A</text>
+  <text x="900" y="140" font-family="Arial, sans-serif" font-size="12" fill="#3498db">H</text>
+  
+  <!-- Measurement overlay -->
+  <line x1="400" y1="300" x2="500" y2="350" stroke="#e74c3c" stroke-width="2"/>
+  <text x="450" y="320" font-family="Arial, sans-serif" font-size="10" fill="#e74c3c">12×10 mm</text>
+  
+  <!-- Right Panel - Doctor's Reports -->
+  <rect x="1000" y="50" width="400" height="850" fill="#2c3e50"/>
+  
+  <!-- Panel Header -->
+  <rect x="1000" y="50" width="400" height="40" fill="#3498db"/>
+  <text x="1020" y="75" font-family="Arial, sans-serif" font-size="16" fill="white" font-weight="bold">👨‍⚕️ Doctor's Reports</text>
+  <text x="1300" y="75" font-family="Arial, sans-serif" font-size="12" fill="white">🇷🇺 RU</text>
+  <rect x="1350" y="60" width="30" height="20" fill="#2ecc71" rx="3"/>
+  <text x="1365" y="72" font-family="Arial, sans-serif" font-size="8" fill="white" text-anchor="middle">PDF</text>
+  
+  <!-- Patient Information -->
+  <rect x="1020" y="110" width="360" height="120" fill="#34495e" rx="5"/>
+  <text x="1030" y="130" font-family="Arial, sans-serif" font-size="14" fill="#3498db" font-weight="bold">Patient Information</text>
+  <text x="1030" y="150" font-family="Arial, sans-serif" font-size="12" fill="white">Patient: Test MRI Patient</text>
+  <text x="1030" y="170" font-family="Arial, sans-serif" font-size="12" fill="white">ID: MRI001</text>
+  <text x="1030" y="190" font-family="Arial, sans-serif" font-size="12" fill="white">Study: Brain MRI with contrast (MR)</text>
+  <text x="1030" y="210" font-family="Arial, sans-serif" font-size="12" fill="white">Date: 29.05.2025</text>
+  
+  <!-- Report History -->
+  <rect x="1020" y="250" width="360" height="80" fill="#34495e" rx="5"/>
+  <text x="1030" y="270" font-family="Arial, sans-serif" font-size="14" fill="#3498db" font-weight="bold">📋 Report History</text>
+  <rect x="1030" y="280" width="200" height="25" fill="#9b59b6" rx="3"/>
+  <text x="1035" y="295" font-family="Arial, sans-serif" font-size="10" fill="white">+ New Report</text>
+  
+  <rect x="1030" y="310" width="340" height="15" fill="#2c3e50" rx="2"/>
+  <text x="1035" y="320" font-family="Arial, sans-serif" font-size="9" fill="#e74c3c">🔵 Больной Ублюдок</text>
+  <text x="1300" y="320" font-family="Arial, sans-serif" font-size="8" fill="#95a5a6">5/31/2025 2:02:23 PM</text>
+  
+  <!-- Report Editor -->
+  <rect x="1020" y="350" width="360" height="250" fill="#34495e" rx="5"/>
+  <text x="1030" y="370" font-family="Arial, sans-serif" font-size="14" fill="#3498db" font-weight="bold">✍️ Editing Report</text>
+  <text x="1250" y="370" font-family="Arial, sans-serif" font-size="12" fill="#2ecc71">Больной Ублюдок</text>
+  
+  <!-- Rich Text Editor -->
+  <rect x="1030" y="380" width="340" height="150" fill="#1a1a1a" stroke="#3498db" stroke-width="1" rx="3"/>
+  <text x="1035" y="400" font-family="Arial, sans-serif" font-size="11" fill="#e74c3c">🔴 Описание:</text>
+  <text x="1035" y="420" font-family="Arial, sans-serif" font-size="10" fill="white">Исследование выполнено в аксиальных, сагиттальных и</text>
+  <text x="1035" y="435" font-family="Arial, sans-serif" font-size="10" fill="white">коронарных плоскостях в режимах Т1, Т2 и FLAIR с</text>
+  <text x="1035" y="450" font-family="Arial, sans-serif" font-size="10" fill="white">контрастным усилением.</text>
+  <text x="1035" y="470" font-family="Arial, sans-serif" font-size="10" fill="white">В проекции левой теменной доли определяется</text>
+  <text x="1035" y="485" font-family="Arial, sans-serif" font-size="10" fill="white">объемное образование овальной формы, с чёткими</text>
+  <text x="1035" y="500" font-family="Arial, sans-serif" font-size="10" fill="white">контурами, размерами 12×10 мм. Наблюдается</text>
+  <text x="1035" y="515" font-family="Arial, sans-serif" font-size="10" fill="white">умеренное накопление контрастного вещества.</text>
+  
+  <!-- Action Buttons -->
+  <rect x="1030" y="620" width="80" height="35" fill="#2ecc71" rx="5"/>
+  <text x="1070" y="642" font-family="Arial, sans-serif" font-size="12" fill="white" text-anchor="middle">💾 Save</text>
+  
+  <rect x="1120" y="620" width="100" height="35" fill="#e67e22" rx="5"/>
+  <text x="1170" y="642" font-family="Arial, sans-serif" font-size="12" fill="white" text-anchor="middle">📄 Export PDF</text>
+  
+  <rect x="1230" y="620" width="70" height="35" fill="#e74c3c" rx="5"/>
+  <text x="1265" y="642" font-family="Arial, sans-serif" font-size="12" fill="white" text-anchor="middle">🗑️ Delete</text>
+  
+  <!-- Save Status -->
+  <rect x="1030" y="670" width="250" height="20" fill="#27ae60" rx="3"/>
+  <text x="1035" y="683" font-family="Arial, sans-serif" font-size="10" fill="white">✅ Report saved: Больной Ублюдок</text>
+  
+  <!-- Footer Tools -->
+  <rect x="200" y="870" width="800" height="30" fill="#2c3e50"/>
+  <text x="220" y="890" font-family="Arial, sans-serif" font-size="12" fill="#3498db">🔧 Zoom | 📏 Measure | 📝 Annotate | 🎨 Window/Level</text>
+</svg> 

@@ -1,0 +1,91 @@
+<svg width="800" height="500" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="500" fill="#1a1a1a"/>
+  
+  <!-- Header -->
+  <rect x="0" y="0" width="800" height="60" fill="#2c3e50"/>
+  <text x="20" y="35" font-family="Arial, sans-serif" font-size="18" fill="white" font-weight="bold">🏥 Clinton Medical PACS - Multi-Language Support</text>
+  
+  <!-- Language Selector Box -->
+  <rect x="250" y="100" width="300" height="250" fill="#34495e" stroke="#3498db" stroke-width="2" rx="10"/>
+  <text x="400" y="130" font-family="Arial, sans-serif" font-size="16" fill="#3498db" font-weight="bold" text-anchor="middle">🌍 Doctor's Reports</text>
+  
+  <!-- Language Options -->
+  <!-- English -->
+  <rect x="270" y="150" width="260" height="35" fill="#2c3e50" stroke="#3498db" stroke-width="1" rx="5"/>
+  <text x="285" y="172" font-family="Arial, sans-serif" font-size="14" fill="white">🇺🇸 EN - English</text>
+  <circle cx="510" cy="167" r="8" fill="#2ecc71"/>
+  <text x="510" y="172" font-family="Arial, sans-serif" font-size="10" fill="white" text-anchor="middle">✓</text>
+  
+  <!-- Russian -->
+  <rect x="270" y="190" width="260" height="35" fill="#3498db" stroke="#3498db" stroke-width="2" rx="5"/>
+  <text x="285" y="212" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="bold">🇷🇺 RU - Русский</text>
+  <circle cx="510" cy="207" r="8" fill="#e74c3c"/>
+  <text x="510" y="212" font-family="Arial, sans-serif" font-size="10" fill="white" text-anchor="middle">●</text>
+  
+  <!-- Spanish -->
+  <rect x="270" y="230" width="260" height="35" fill="#2c3e50" stroke="#3498db" stroke-width="1" rx="5"/>
+  <text x="285" y="252" font-family="Arial, sans-serif" font-size="14" fill="white">🇪🇸 ES - Español</text>
+  <circle cx="510" cy="247" r="8" fill="#95a5a6"/>
+  
+  <!-- French -->
+  <rect x="270" y="270" width="260" height="35" fill="#2c3e50" stroke="#3498db" stroke-width="1" rx="5"/>
+  <text x="285" y="292" font-family="Arial, sans-serif" font-size="14" fill="white">🇫🇷 FR - Français</text>
+  <circle cx="510" cy="287" r="8" fill="#95a5a6"/>
+  
+  <!-- German -->
+  <rect x="270" y="310" width="260" height="35" fill="#2c3e50" stroke="#3498db" stroke-width="1" rx="5"/>
+  <text x="285" y="332" font-family="Arial, sans-serif" font-size="14" fill="white">🇩🇪 DE - Deutsch</text>
+  <circle cx="510" cy="327" r="8" fill="#95a5a6"/>
+  
+  <!-- Feature Highlights -->
+  <rect x="50" y="380" width="700" height="80" fill="#2c3e50" rx="5"/>
+  <text x="70" y="405" font-family="Arial, sans-serif" font-size="14" fill="#3498db" font-weight="bold">✨ Multilingual Features:</text>
+  <text x="70" y="425" font-family="Arial, sans-serif" font-size="12" fill="white">• Real-time interface translation without page reload</text>
+  <text x="70" y="445" font-family="Arial, sans-serif" font-size="12" fill="white">• Medical terminology localization for healthcare workflows</text>
+  
+  <text x="400" y="425" font-family="Arial, sans-serif" font-size="12" fill="white">• PDF reports with localized dates and formatting</text>
+  <text x="400" y="445" font-family="Arial, sans-serif" font-size="12" fill="white">• Cultural adaptation for different healthcare systems</text>
+  
+  <!-- Left Side - Current Interface -->
+  <rect x="20" y="100" width="200" height="250" fill="#34495e" rx="5"/>
+  <text x="120" y="125" font-family="Arial, sans-serif" font-size="12" fill="#3498db" font-weight="bold" text-anchor="middle">Текущий Интерфейс</text>
+  <text x="30" y="150" font-family="Arial, sans-serif" font-size="10" fill="white">📋 Список Исследований</text>
+  <text x="30" y="170" font-family="Arial, sans-serif" font-size="10" fill="white">👨‍⚕️ Заключение врача</text>
+  <text x="30" y="190" font-family="Arial, sans-serif" font-size="10" fill="white">💾 Сохранить</text>
+  <text x="30" y="210" font-family="Arial, sans-serif" font-size="10" fill="white">📄 Экспорт PDF</text>
+  <text x="30" y="230" font-family="Arial, sans-serif" font-size="10" fill="white">🗑️ Удалить</text>
+  <text x="30" y="250" font-family="Arial, sans-serif" font-size="10" fill="white">⚙️ Настройки</text>
+  <text x="30" y="270" font-family="Arial, sans-serif" font-size="10" fill="white">📊 Статистика</text>
+  <text x="30" y="310" font-family="Arial, sans-serif" font-size="8" fill="#95a5a6">Пациент: Тестовый МРТ Пациент</text>
+  <text x="30" y="325" font-family="Arial, sans-serif" font-size="8" fill="#95a5a6">Исследование: МРТ головного мозга</text>
+  <text x="30" y="340" font-family="Arial, sans-serif" font-size="8" fill="#95a5a6">Дата: 29.05.2025</text>
+  
+  <!-- Right Side - Target Interface -->
+  <rect x="580" y="100" width="200" height="250" fill="#34495e" rx="5"/>
+  <text x="680" y="125" font-family="Arial, sans-serif" font-size="12" fill="#2ecc71" font-weight="bold" text-anchor="middle">After Selection</text>
+  <text x="590" y="150" font-family="Arial, sans-serif" font-size="10" fill="white">📋 Study List</text>
+  <text x="590" y="170" font-family="Arial, sans-serif" font-size="10" fill="white">👨‍⚕️ Doctor's Report</text>
+  <text x="590" y="190" font-family="Arial, sans-serif" font-size="10" fill="white">💾 Save</text>
+  <text x="590" y="210" font-family="Arial, sans-serif" font-size="10" fill="white">📄 Export PDF</text>
+  <text x="590" y="230" font-family="Arial, sans-serif" font-size="10" fill="white">🗑️ Delete</text>
+  <text x="590" y="250" font-family="Arial, sans-serif" font-size="10" fill="white">⚙️ Settings</text>
+  <text x="590" y="270" font-family="Arial, sans-serif" font-size="10" fill="white">📊 Statistics</text>
+  <text x="590" y="310" font-family="Arial, sans-serif" font-size="8" fill="#95a5a6">Patient: Test MRI Patient</text>
+  <text x="590" y="325" font-family="Arial, sans-serif" font-size="8" fill="#95a5a6">Study: Brain MRI with contrast</text>
+  <text x="590" y="340" font-family="Arial, sans-serif" font-size="8" fill="#95a5a6">Date: 29.05.2025</text>
+  
+  <!-- Animation Arrow -->
+  <path d="M 230 225 Q 265 225 270 225" stroke="#3498db" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+  <path d="M 550 225 Q 565 225 570 225" stroke="#2ecc71" stroke-width="3" fill="none" marker-end="url(#arrowhead2)"/>
+  
+  <!-- Arrow markers -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#3498db"/>
+    </marker>
+    <marker id="arrowhead2" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2ecc71"/>
+    </marker>
+  </defs>
+</svg> 

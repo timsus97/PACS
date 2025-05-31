@@ -1,0 +1,71 @@
+<svg width="1200" height="800" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1200" height="800" fill="#1a1a1a"/>
+  
+  <!-- Header -->
+  <rect x="0" y="0" width="1200" height="60" fill="#2c3e50"/>
+  <text x="20" y="35" font-family="Arial, sans-serif" font-size="18" fill="white" font-weight="bold">Clinton Medical PACS - Study List</text>
+  <text x="1050" y="35" font-family="Arial, sans-serif" font-size="14" fill="#3498db">2 Studies</text>
+  
+  <!-- Search Bar -->
+  <rect x="20" y="80" width="1160" height="40" fill="#34495e" rx="5"/>
+  <text x="30" y="105" font-family="Arial, sans-serif" font-size="14" fill="#bdc3c7">Search by Patient Name, MRN, Study Date...</text>
+  
+  <!-- Filter Headers -->
+  <rect x="20" y="140" width="1160" height="30" fill="#2c3e50"/>
+  <text x="30" y="160" font-family="Arial, sans-serif" font-size="12" fill="white" font-weight="bold">Patient Name</text>
+  <text x="200" y="160" font-family="Arial, sans-serif" font-size="12" fill="white" font-weight="bold">MRN</text>
+  <text x="320" y="160" font-family="Arial, sans-serif" font-size="12" fill="white" font-weight="bold">Study Date</text>
+  <text x="500" y="160" font-family="Arial, sans-serif" font-size="12" fill="white" font-weight="bold">Description</text>
+  <text x="750" y="160" font-family="Arial, sans-serif" font-size="12" fill="white" font-weight="bold">Modality</text>
+  <text x="900" y="160" font-family="Arial, sans-serif" font-size="12" fill="white" font-weight="bold">Accession #</text>
+  <text x="1080" y="160" font-family="Arial, sans-serif" font-size="12" fill="white" font-weight="bold">Instances</text>
+  
+  <!-- Study 1 - MRI -->
+  <rect x="20" y="170" width="1160" height="60" fill="#34495e" stroke="#3498db" stroke-width="2"/>
+  <text x="30" y="195" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="bold">Test, MRI Patient</text>
+  <text x="200" y="195" font-family="Arial, sans-serif" font-size="14" fill="#3498db">MRI001</text>
+  <text x="320" y="195" font-family="Arial, sans-serif" font-size="14" fill="white">May-29-2025 07:25 PM</text>
+  <text x="500" y="195" font-family="Arial, sans-serif" font-size="14" fill="white">Brain MRI with contrast</text>
+  <text x="750" y="195" font-family="Arial, sans-serif" font-size="14" fill="#e74c3c" font-weight="bold">MR</text>
+  <text x="900" y="195" font-family="Arial, sans-serif" font-size="14" fill="white">ACC_MRI_001</text>
+  <text x="1080" y="195" font-family="Arial, sans-serif" font-size="14" fill="#2ecc71" font-weight="bold">📁 20</text>
+  
+  <!-- Study 1 Details -->
+  <text x="30" y="215" font-family="Arial, sans-serif" font-size="12" fill="#bdc3c7">T1 MPRAGE SAG • 2 Series • MR • 20 Instances</text>
+  
+  <!-- Study 2 - CT -->
+  <rect x="20" y="240" width="1160" height="60" fill="#34495e" stroke="#95a5a6" stroke-width="1"/>
+  <text x="30" y="265" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="bold">Test, Patient</text>
+  <text x="200" y="265" font-family="Arial, sans-serif" font-size="14" fill="#3498db">123456</text>
+  <text x="320" y="265" font-family="Arial, sans-serif" font-size="14" fill="white">May-29-2025 07:06 PM</text>
+  <text x="500" y="265" font-family="Arial, sans-serif" font-size="14" fill="white">Test CT Study</text>
+  <text x="750" y="265" font-family="Arial, sans-serif" font-size="14" fill="#f39c12" font-weight="bold">CT</text>
+  <text x="900" y="265" font-family="Arial, sans-serif" font-size="14" fill="white">ACC_CT_001</text>
+  <text x="1080" y="265" font-family="Arial, sans-serif" font-size="14" fill="#2ecc71" font-weight="bold">📁 4</text>
+  
+  <!-- Study 2 Details -->
+  <text x="30" y="285" font-family="Arial, sans-serif" font-size="12" fill="#bdc3c7">Test CT Series • 1 Series • CT • 4 Instances</text>
+  
+  <!-- Action Buttons -->
+  <rect x="30" y="320" width="100" height="30" fill="#3498db" rx="5"/>
+  <text x="65" y="340" font-family="Arial, sans-serif" font-size="12" fill="white" text-anchor="middle">Basic Viewer</text>
+  
+  <rect x="140" y="320" width="100" height="30" fill="#9b59b6" rx="5"/>
+  <text x="190" y="340" font-family="Arial, sans-serif" font-size="12" fill="white" text-anchor="middle">Segmentation</text>
+  
+  <rect x="250" y="320" width="120" height="30" fill="#e67e22" rx="5"/>
+  <text x="310" y="340" font-family="Arial, sans-serif" font-size="12" fill="white" text-anchor="middle">TMT Volume</text>
+  
+  <rect x="380" y="320" width="100" height="30" fill="#27ae60" rx="5"/>
+  <text x="430" y="340" font-family="Arial, sans-serif" font-size="12" fill="white" text-anchor="middle">Microscopy</text>
+  
+  <!-- Footer -->
+  <rect x="20" y="750" width="1160" height="30" fill="#2c3e50"/>
+  <text x="30" y="770" font-family="Arial, sans-serif" font-size="12" fill="#bdc3c7">Page 1 • Results per page: Select...</text>
+  <text x="1050" y="770" font-family="Arial, sans-serif" font-size="12" fill="#3498db">◄ Back | Next ►</text>
+  
+  <!-- Logo -->
+  <circle cx="1150" cy="30" r="15" fill="#3498db"/>
+  <text x="1150" y="35" font-family="Arial, sans-serif" font-size="12" fill="white" text-anchor="middle">C</text>
+</svg> 

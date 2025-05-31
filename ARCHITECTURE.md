@@ -1,8 +1,8 @@
-# 🏗️ Klinika Pro PACS - System Architecture
+# 🏗️ Clinton Medical PACS - System Architecture
 
 ## 🎯 Architecture Overview
 
-Klinika Pro PACS follows a microservices architecture with containerized components, ensuring scalability, maintainability, and security for medical imaging workflows.
+Clinton Medical PACS follows a microservices architecture with containerized components, ensuring scalability, maintainability, and security for medical imaging workflows.
 
 ---
 

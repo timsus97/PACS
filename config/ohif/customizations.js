@@ -1,3 +1,40 @@
+// CSS to hide INVESTIGATIONAL USE ONLY text completely
+(function() {
+    const style = document.createElement('style');
+    style.textContent = `
+        /* Hide all investigational use texts and watermarks */
+        .research-use-notification,
+        .investigational-use,
+        [class*="InvestigationalUse"],
+        [class*="investigational"],
+        [class*="research-use"],
+        [data-cy*="investigational"],
+        [data-testid*="investigational"],
+        div:contains("INVESTIGATIONAL USE ONLY"),
+        div:contains("investigational use only"),
+        span:contains("INVESTIGATIONAL"),
+        span:contains("investigational"),
+        .cornerstone-canvas-overlay [class*="text"],
+        [style*="INVESTIGATIONAL"] {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            position: absolute !important;
+            left: -9999px !important;
+            width: 0 !important;
+            height: 0 !important;
+        }
+        
+        /* Additional rules for any remaining elements */
+        *[class*="watermark"],
+        *[class*="overlay"]:contains("INVESTIGATIONAL"),
+        .cornerstoneViewportOverlay *:contains("INVESTIGATIONAL") {
+            display: none !important;
+        }
+    `;
+    document.head.appendChild(style);
+})();
+
 // Doctor report system for OHIF PACS with full functionality and multilingual support
 // Global functions for managing reports and patient data
 function getAllSavedReports() {
@@ -115,7 +152,7 @@ function importReportsData(jsonData) {
             
             if (existingIndex >= 0) {
                 existingReports[existingIndex] = report;
-            } else {
+                } else {
                 existingReports.push(report);
             }
             
@@ -126,7 +163,7 @@ function importReportsData(jsonData) {
         console.log('Data import completed:', importedReports, 'reports imported');
         return true;
         
-    } catch (error) {
+            } catch (error) {
         console.error('Error importing data:', error);
         return false;
     }
@@ -181,7 +218,7 @@ const translations = {
         noPatientExport: 'No patient data for export',
         
         // PDF Content
-        clinicName: 'Klinika Pro PACS',
+        clinicName: 'Clinton Medical PACS',
         patientInformation: 'Patient Information',
         patientName: 'Patient',
         patientIDLabel: 'Patient ID',
@@ -245,7 +282,7 @@ const translations = {
         noPatientExport: 'Нет данных пациента для экспорта',
         
         // PDF Content
-        clinicName: 'Klinika Pro PACS',
+        clinicName: 'Clinton Medical PACS',
         patientInformation: 'Информация о пациенте',
         patientName: 'Пациент',
         patientIDLabel: 'ID пациента',
@@ -309,7 +346,7 @@ const translations = {
         noPatientExport: 'No hay datos del paciente para exportar',
         
         // PDF Content
-        clinicName: 'Klinika Pro PACS',
+        clinicName: 'Clinton Medical PACS',
         patientInformation: 'Información del Paciente',
         patientName: 'Paciente',
         patientIDLabel: 'ID del Paciente',
@@ -373,7 +410,7 @@ const translations = {
         noPatientExport: 'Aucune donnée patient pour export',
         
         // PDF Content
-        clinicName: 'Klinika Pro PACS',
+        clinicName: 'Clinton Medical PACS',
         patientInformation: 'Information du Patient',
         patientName: 'Patient',
         patientIDLabel: 'ID du Patient',
@@ -437,7 +474,7 @@ const translations = {
         noPatientExport: 'Keine Patientendaten zum Exportieren',
         
         // PDF Content
-        clinicName: 'Klinika Pro PACS',
+        clinicName: 'Clinton Medical PACS',
         patientInformation: 'Patienteninformation',
         patientName: 'Patient',
         patientIDLabel: 'Patienten-ID',
@@ -1464,7 +1501,7 @@ function initializeEventListeners() {
     
     // Check for language changes periodically but less frequently
     let lastLanguage = getCurrentLanguage();
-    setInterval(() => {
+setInterval(() => {
         const currentLang = getCurrentLanguage();
         if (currentLang !== lastLanguage) {
             console.log('Language changed from', lastLanguage, 'to', currentLang);
@@ -1506,7 +1543,7 @@ function addAccountInfoToSettingsMenu() {
         let settingsMenu = null;
         
         // First try to find by text content
-        const allElements = document.querySelectorAll('*');
+            const allElements = document.querySelectorAll('*');
         for (const element of allElements) {
             const elementText = element.textContent || '';
             const hasMenuStructure = element.children && element.children.length > 0;
@@ -1673,12 +1710,12 @@ function addAccountInfoToSettingsMenu() {
                 return {
                     name: displayName,
                     username: username,
-                    email: payload.email || 'user@klinika.pro',
+                    email: payload.email || 'user@clintonmedical.com',
                     role: getRoleText(payload.role || 'doctor'),
                     userId: payload.sub || payload.user_id || 'unknown'
-                };
-            }
-        } catch (error) {
+                        };
+                    }
+                } catch (error) {
             console.error('Error parsing user token:', error);
         }
         
@@ -1686,7 +1723,7 @@ function addAccountInfoToSettingsMenu() {
         return {
             name: 'User',
             username: 'guest',
-            email: 'guest@klinika.pro', 
+            email: 'guest@clintonmedical.com', 
             role: getRoleText('doctor'),
             userId: 'guest'
         };
@@ -1828,10 +1865,10 @@ function addAccountInfoToSettingsMenu() {
                             )) {
                                 lastMenuCheck = now;
                                 setTimeout(modifySettingsMenu, 100);
-                            }
-                        }
-                    });
+                    }
                 }
+            });
+            }
             });
         });
         
@@ -1975,3 +2012,103 @@ function checkAuthenticationOnLoad() {
         window.location.href = '/login';
     }
 }
+
+// Initialize the report system when DOM is ready
+function initReportSystem() {
+    // DOM is already ready since this script loads after page load
+    createFloatingButton();
+    
+    // Monitor viewport changes
+    const observer = new MutationObserver(handleViewportChanges);
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['class']
+    });
+    
+    // Show initial message
+    showMessage(t('openStudy'), 'info');
+}
+
+// Anti-investigational use patrol - continuously remove any investigational elements
+function antiInvestigationalPatrol() {
+    try {
+        // Find and remove any elements containing investigational text
+        const investigationalSelectors = [
+            '*[class*="investigational"]',
+            '*[class*="InvestigationalUse"]', 
+            '*[class*="research-use"]',
+            '*[data-cy*="investigational"]',
+            '*[data-testid*="investigational"]',
+            '.research-use-notification',
+            '.investigational-use'
+        ];
+        
+        investigationalSelectors.forEach(selector => {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach(el => {
+                if (el) {
+                    el.style.display = 'none';
+                    el.style.visibility = 'hidden';
+                    el.style.opacity = '0';
+                    el.remove();
+                }
+            });
+        });
+        
+        // Find elements by text content
+        const walker = document.createTreeWalker(
+            document.body,
+            NodeFilter.SHOW_TEXT,
+            null,
+            false
+        );
+        
+        let textNode;
+        const investigationalTexts = [
+            'INVESTIGATIONAL USE ONLY',
+            'investigational use only',
+            'INVESTIGATIONAL',
+            'investigational'
+        ];
+        
+        while (textNode = walker.nextNode()) {
+            const text = textNode.textContent;
+            if (investigationalTexts.some(invText => text.includes(invText))) {
+                const parent = textNode.parentElement;
+                if (parent) {
+                    parent.style.display = 'none';
+                    parent.remove();
+                }
+            }
+        }
+        
+        // Remove canvas overlay texts that might contain investigational content
+        const canvasOverlays = document.querySelectorAll('.cornerstone-canvas-overlay, .viewport-overlay');
+        canvasOverlays.forEach(overlay => {
+            const textElements = overlay.querySelectorAll('*');
+            textElements.forEach(el => {
+                if (el.textContent && (
+                    el.textContent.includes('INVESTIGATIONAL') || 
+                    el.textContent.includes('investigational')
+                )) {
+                    el.style.display = 'none';
+                    el.remove();
+                }
+            });
+        });
+        
+    } catch (error) {
+        // Silently handle errors to avoid disrupting the main application
+    }
+}
+
+// Run anti-investigational patrol every 500ms
+setInterval(antiInvestigationalPatrol, 500);
+
+// Run immediately
+antiInvestigationalPatrol();
+
+// Start the report system
+initReportSystem();

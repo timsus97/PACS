@@ -62,6 +62,9 @@ services:
       dockerfile: Dockerfile
     container_name: pacs_flask_auth
     hostname: flask_auth_pacs
+    depends_on:
+      db_pacs:
+        condition: service_healthy
     environment:
       FLASK_APP: app.py
       FLASK_ENV: production # Set to development for debugging
@@ -73,6 +76,13 @@ services:
       ORTHANC_URL: http://orthanc:8042 # Internal URL to Orthanc for auth checks
       ORTHANC_USERNAME: ${ORTHANC_USERNAME:-admin_pacs} # For service-to-service auth if needed
       ORTHANC_PASSWORD: ${ORTHANC_PASSWORD:-change_this_very_secret_password_for_orthanc_admin}
+      # PostgreSQL Database Configuration
+      DATABASE_URL: postgresql://${POSTGRES_USER:-orthanc_user}:${POSTGRES_PASSWORD:-change_this_very_secret_password_for_postgres}@db_pacs:5432/${POSTGRES_DB:-orthanc}
+      POSTGRES_HOST: db_pacs
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-orthanc}
+      POSTGRES_USER: ${POSTGRES_USER:-orthanc_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change_this_very_secret_password_for_postgres}
       TZ: ${TZ:-UTC}
     volumes:
       - ./flask_auth_service:/app # Mount code for development, remove for production image build

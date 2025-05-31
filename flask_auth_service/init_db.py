@@ -8,10 +8,19 @@ from werkzeug.security import generate_password_hash
 def init_db():
     app = Flask(__name__)
     
-    # Configure the Flask app
-    DATA_DIR = '/app/data'
-    os.makedirs(DATA_DIR, exist_ok=True)
-    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(DATA_DIR, "users.db")}'
+    # Configure the Flask app - use same logic as app.py
+    DATABASE_URL = os.environ.get('DATABASE_URL')
+    if DATABASE_URL:
+        # Use PostgreSQL from environment
+        app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
+        print(f"Using PostgreSQL database: {DATABASE_URL}")
+    else:
+        # Fallback to SQLite for development
+        DATA_DIR = '/app/data'
+        os.makedirs(DATA_DIR, exist_ok=True)
+        app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(DATA_DIR, "users.db")}'
+        print(f"Using SQLite database: {app.config['SQLALCHEMY_DATABASE_URI']}")
+    
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     
     # Initialize the database
@@ -31,21 +40,21 @@ def init_db():
             default_users = [
                 {
                     'username': 'admin',
-                    'password': 'admin_password_change_me_12345',
+                    'password': 'admin',
                     'role': 'admin',
-                    'email': 'admin@klinika.pro'
+                    'email': 'admin@clintonmedical.com'
                 },
                 {
                     'username': 'doctor',
-                    'password': 'doctor_password_change_me_12345',
+                    'password': 'doctor',
                     'role': 'doctor',
-                    'email': 'doctor@klinika.pro'
+                    'email': 'doctor@clintonmedical.com'
                 },
                 {
                     'username': 'operator',
-                    'password': 'operator_password_change_me_12345',
+                    'password': 'operator',
                     'role': 'operator',
-                    'email': 'operator@klinika.pro'
+                    'email': 'operator@clintonmedical.com'
                 }
             ]
             

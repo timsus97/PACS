@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Klinika Pro PACS - Quick Start Script
+# Clinton Medical PACS - Quick Start Script
 # Author: Tim Hunt (tr00x)
 # Version: 1.0
 
@@ -16,7 +16,7 @@ NC='\033[0m'
 print_banner() {
     echo -e "${BLUE}"
     echo "╔═══════════════════════════════════════════════════╗"
-    echo "║            🏥 KLINIKA PRO PACS 🏥             ║"
+    echo "║            🏥 CLINTON MEDICAL PACS 🏥             ║"
     echo "║               Быстрый Запуск                   ║"
     echo "╚═══════════════════════════════════════════════════╝"
     echo -e "${NC}"

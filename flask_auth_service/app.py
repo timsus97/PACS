@@ -22,9 +22,18 @@ app.config['ORTHANC_URL'] = os.environ.get('ORTHANC_URL', 'http://orthanc:8042')
 # app.config['ORTHANC_PASSWORD'] = os.environ.get('ORTHANC_PASSWORD')
 
 # SQLAlchemy Configuration
-DATA_DIR = '/app/data'  # Docker volume mount point
-os.makedirs(DATA_DIR, exist_ok=True)  # Ensure data directory exists
-app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(DATA_DIR, "users.db")}'
+DATABASE_URL = os.environ.get('DATABASE_URL')
+if DATABASE_URL:
+    # Use PostgreSQL from environment
+    app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
+    print(f"Using PostgreSQL database: {DATABASE_URL}")
+else:
+    # Fallback to SQLite for development
+    DATA_DIR = '/app/data'  # Docker volume mount point
+    os.makedirs(DATA_DIR, exist_ok=True)  # Ensure data directory exists
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(DATA_DIR, "users.db")}'
+    print(f"Using SQLite database: {app.config['SQLALCHEMY_DATABASE_URI']}")
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Initialize db with app
@@ -246,7 +255,7 @@ def login():
         <!DOCTYPE html>
         <html>
         <head>
-            <title>Klinika Pro PACS - Login</title>
+            <title>Clinton Medical PACS - Login</title>
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1">
             <style>
@@ -332,7 +341,7 @@ def login():
         </head>
         <body>
             <div class="login-container">
-                <div class="logo">🏥 Klinika Pro PACS</div>
+                <div class="logo">🏥 Clinton Medical PACS</div>
                 <form id="loginForm">
                     <div class="form-group">
                         <label for="username">Username:</label>

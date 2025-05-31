@@ -1,490 +1,253 @@
-// OHIF Viewer Configuration for Klinika Pro PACS
-// Saved as: /config/ohif/app-config.js
-// This file will be mounted into the OHIF Docker container.
+// OHIF Viewer Configuration for Clinton Medical PACS
+// Author: Tim Hunt (tr00x)
+// Version: 1.0
 
+// Enhanced configuration with maximum functionality
 window.config = {
-  // App Name and Theming (Rule 4.1, 4.2)
   routerBasename: '/',
-  // whiteLabeling: {
-  //   createLogoComponentFn: function (React) {
-  //     return React.createElement(
-  //       'a',
-  //       {
-  //         target: '_self',
-  //         href: '/',
-  //         style: {
-  //           display: 'block',
-  //           textDecoration: 'none'
-  //         },
-  //       },
-  //       // Replace with your Klinika Pro logo (e.g., an SVG or an <img> tag)
-  //       React.createElement('img', {
-  //         src: '/assets/klinika-pro-logo.svg', // Ensure this asset is available
-  //         style: { height: '40px', marginTop: '5px' }, // Adjust style as needed
-  //         alt: 'Klinika Pro',
-  //       })
-  //     );
-  //   },
-  // },
-  // studyListFunctionsEnabled: true, // Keep study list enabled
-
-  // Extensions: Add any required or custom extensions here
+  enableGoogleCloudAdapter: false,
+  showStudyList: true,
+  maxNumberOfWebWorkers: 4,
+  disableEditing: false,
+  disableAnnotationTools: false,
+  showCineControls: true,
+  showOpenFileButton: false,  // Hide file upload button
+  allowMixedContentResize: true,
+  showDownloadViewport: false,  // Hide download buttons
+  showDownloadStudy: false,    // Hide download buttons
+  
+  // Add router basename (if needed)
+  // routerBasename: '/ohif',
+  
   extensions: [],
-
-  // Modes: Configure modes for different workflows if needed
   modes: [],
-
-  // Data Sources (Rule 4.1)
+  customizationService: {},
+  
+  // Custom logo configuration
+  // whiteLabeling: {
+  //     createLogoComponentFn: function(React) {
+  //       // Replace with your Clinton Medical logo (e.g., an SVG or an <img> tag)
+  //       return React.createElement('div', {
+  //         style: { color: '#5a9def', fontWeight: 'bold', fontSize: '18px' }
+  //       }, 'Clinton Medical');
+  //       // Alternatively, use an image:
+  //       // return React.createElement('img', {
+  //       //   src: '/assets/logo.png', // Place your logo in public/assets/
+  //       //   alt: 'Clinton Medical',
+  //       //   style: { height: '30px' }
+  //       // });
+  //     },
+  //   },
+  
+  defaultDataSourceName: 'dicomweb',
   dataSources: [
     {
+      friendlyName: 'Orthanc DICOM Server',
       namespace: '@ohif/extension-default.dataSourcesModule.dicomweb',
       sourceName: 'dicomweb',
       configuration: {
         name: 'Orthanc',
-        wadoUriRoot: 'https://localhost/orthanc/wado',
-        qidoRoot: 'https://localhost/orthanc/dicom-web',
-        wadoRoot: 'https://localhost/orthanc/dicom-web',
-        qidoSupportsIncludeField: true,
+        qidoRoot: '/orthanc/dicom-web',  // Proxy to Orthanc via nginx
+        wadoRoot: '/orthanc/dicom-web',
+        qidoSupportsIncludeField: false,
+        supportsReject: false,
         imageRendering: 'wadors',
         thumbnailRendering: 'wadors',
         enableStudyLazyLoad: true,
-        supportsFuzzyMatching: true,
+        supportsFuzzyMatching: false,
         supportsWildcard: true,
         requestOptions: {
-          auth: 'bearer',
-          headers: {
-            'Authorization': () => {
-              const token = localStorage.getItem('jwt_token');
-              return token ? `Bearer ${token}` : '';
-            }
-          }
-        }
+          requestCredentials: 'same-origin', // include, same-origin, omit
+          // auth: 'admin:orthanc',  // not recommended for production
+        },
+        dicomUploadEnabled: false,  // Disable upload feature
+        bulkDataURI: {
+          enabled: true,
+          relativeResolution: 'studies',
+        },
+        omitQuotationForMultipartRequest: true,
       },
     },
   ],
-
-  // Default route if no other matching route is found
-  defaultRoute: '/studylist',
-
-  // Show Study List first
-  showStudyList: true,
-
-  // Basic hanging protocols configuration
-  hangingProtocols: [
-    {
-      id: 'defaultProtocol',
-      name: 'Default Layout',
-      protocolMatchingRules: [
-        {
-          weight: 1,
-          attribute: 'StudyInstanceUID',
-          constraint: {
-            equals: {
-              value: '*'
-            }
-          }
-        }
-      ],
-      stages: [
-        {
-          name: 'default',
-          viewportStructure: {
-            layoutType: 'grid',
-            properties: {
-              rows: 1,
-              columns: 1
-            }
-          },
-          viewports: [
-            {
-              viewportOptions: {
-                toolGroupId: 'default'
-              },
-              displaySets: [
-                {
-                  id: 'defaultDisplaySetId',
-                  matchedDisplaySetsIndex: 0
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      id: 'mpr',
-      name: 'MPR Layout',
-      protocolMatchingRules: [
-        {
-          weight: 25,
-          attribute: 'StudyInstanceUID',
-          constraint: {
-            equals: {
-              value: '*'
-            }
-          }
-        }
-      ],
-      stages: [
-        {
-          name: 'mpr',
-          viewportStructure: {
-            layoutType: 'grid',
-            properties: {
-              rows: 2,
-              columns: 2
-            }
-          },
-          viewports: [
-            {
-              viewportOptions: {
-                toolGroupId: 'mpr',
-                initialImageIdOrIndex: 0
-              },
-              displaySets: [
-                {
-                  matchedDisplaySetsIndex: 0
-                }
-              ]
-            },
-            {
-              viewportOptions: {
-                toolGroupId: 'mpr',
-                orientation: 'sagittal'
-              },
-              displaySets: [
-                {
-                  matchedDisplaySetsIndex: 0
-                }
-              ]
-            },
-            {
-              viewportOptions: {
-                toolGroupId: 'mpr',
-                orientation: 'coronal'
-              },
-              displaySets: [
-                {
-                  matchedDisplaySetsIndex: 0
-                }
-              ]
-            },
-            {
-              viewportOptions: {
-                toolGroupId: 'mpr',
-                orientation: 'axial'
-              },
-              displaySets: [
-                {
-                  matchedDisplaySetsIndex: 0
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      id: 'mprAnd3DVolumeViewport',
-      name: 'MPR and 3D Volume',
-      protocolMatchingRules: [
-        {
-          weight: 30,
-          attribute: 'StudyInstanceUID',
-          constraint: {
-            equals: {
-              value: '*'
-            }
-          }
-        }
-      ],
-      stages: [
-        {
-          name: 'mprAnd3D',
-          viewportStructure: {
-            layoutType: 'grid',
-            properties: {
-              rows: 2,
-              columns: 2
-            }
-          },
-          viewports: [
-            {
-              viewportOptions: {
-                toolGroupId: 'mpr3d',
-                viewportType: 'volume'
-              },
-              displaySets: [
-                {
-                  matchedDisplaySetsIndex: 0
-                }
-              ]
-            },
-            {
-              viewportOptions: {
-                toolGroupId: 'mpr3d',
-                orientation: 'sagittal'
-              },
-              displaySets: [
-                {
-                  matchedDisplaySetsIndex: 0
-                }
-              ]
-            },
-            {
-              viewportOptions: {
-                toolGroupId: 'mpr3d',
-                orientation: 'coronal'
-              },
-              displaySets: [
-                {
-                  matchedDisplaySetsIndex: 0
-                }
-              ]
-            },
-            {
-              viewportOptions: {
-                toolGroupId: 'mpr3d',
-                orientation: 'axial'
-              },
-              displaySets: [
-                {
-                  matchedDisplaySetsIndex: 0
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      id: '@ohif/seg',
-      name: 'Segmentation Layout',
-      protocolMatchingRules: [
-        {
-          weight: 35,
-          attribute: 'StudyInstanceUID',
-          constraint: {
-            equals: {
-              value: '*'
-            }
-          }
-        }
-      ],
-      stages: [
-        {
-          name: 'segmentation',
-          viewportStructure: {
-            layoutType: 'grid',
-            properties: {
-              rows: 1,
-              columns: 2
-            }
-          },
-          viewports: [
-            {
-              viewportOptions: {
-                toolGroupId: 'segmentation'
-              },
-              displaySets: [
-                {
-                  matchedDisplaySetsIndex: 0
-                }
-              ]
-            },
-            {
-              viewportOptions: {
-                toolGroupId: 'segmentation'
-              },
-              displaySets: [
-                {
-                  matchedDisplaySetsIndex: 0
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    }
-  ],
-
-  // Max number of Web Workers to use for parsing and decoding multi-frame images
-  maxNumberOfWebWorkers: navigator.hardwareConcurrency || 3,
-
-  // i18n Configuration to fix React warnings
-  i18n: {
-    defaultLanguage: 'en',
-    defaultNS: 'common',
-    useSuspense: false, // Fix for the wait option warning
-    react: {
-      useSuspense: false, // Additional fix for React components
-      wait: false // Explicitly disable old wait option
-    },
-    debug: false,
-    lng: 'en',
-    fallbackLng: 'en',
-    interpolation: {
-      escapeValue: false // React already does escaping
-    },
-    resources: {
-      en: {
-        common: {
-          // Basic translations to prevent missing key warnings
-          'StudyList': 'Study List',
-          'Viewer': 'Viewer',
-          'Settings': 'Settings'
-        }
-      }
-    }
-  },
-
-  // UI Customizations (Rule 4.1, 4.2)
-  // Some UI settings can be controlled here, others might need direct OHIF code modification or extensions.
-
-  // Example: To control available SOP classes or hanging protocols
-  // sopClassHandlers: [],
-  // studyPrefetcher: { /* ... */ },
+  
+  hotkeys: [],
+  
+  // Enhanced viewport options
   cornerstoneExtensionConfig: {
-    // Disable investigational use watermarks
-    showTextOverlay: false,
-    showWatermark: false,
-    showInvestigationalUseText: false,
-    enableInvestigationalUseOverlay: false,
-    investigationalUseDialogSettings: {
-      show: false,
-      enabled: false
+    tools: {
+      ArrowAnnotate: {
+        configuration: {
+          // Disable some tools for security
+          allowNewMeasurements: true,
+          allowEditMeasurements: true,
+        },
+      },
+      Bidirectional: {
+        configuration: {
+          allowNewMeasurements: true,
+          allowEditMeasurements: true,
+        },
+      },
     },
-    overlay: {
-      enabled: false,
-      investigationalUse: false,
-      showTextOverlay: false
-    },
-    // Tool configuration
-    // activeTools: ['Zoom', 'Pan', 'Magnify', 'Wwwc', 'Length', 'Angle', 'Bidirectional', 'EllipticalRoi', 'RectangleRoi'],
-    // tools: {
-    //   Length: { /* specific config */ },
-    //   // ... other tools
-    // }
-  },
-
-  // TODO (Rule 4.2): Implement Russian Language Support
-  // This usually involves creating a localization file (e.g., public/locales/ru/common.json)
-  // and registering it. OHIF's i18n capabilities might need to be leveraged.
-  // Example (conceptual):
-  // i18n: {
-  //   defaultLanguage: 'ru', // Set Russian as default
-  //   locales: ['en', 'ru'],
-  // },
-
-  // TODO (Rule 4.2): Remove "Download" button/features.
-  // This might require CSS overrides, an extension, or modifying OHIF's source/components.
-  // Search for `data-cy="download-report-button"` or similar selectors in OHIF for report download.
-  // For study/series download, it might be part of context menus or toolbars.
-  // A simple CSS hide could be a first step but might not be robust:
-  // customCSS: [
-  //   `.download-button-selector { display: none !important; }`
-  // ],
-
-  // TODO (Rule 4.2): Implement "Doctor's Report" (Заключение врача) tab/section.
-  // This is a significant UI addition and will likely require a custom OHIF extension.
-  // The extension would:
-  // 1. Add a new panel or tab to the viewer layout.
-  // 2. Inside this panel, include:
-  //    - A rich textarea for report input.
-  //    - A "Save" button (persisting to localStorage, perhaps scoped by StudyInstanceUID).
-  //    - An "Export PDF" button.
-  // 3. The "Export PDF" button should trigger jsPDF to generate a PDF with:
-  //    - Header (e.g., "Klinika Pro - Medical Report").
-  //    - Patient Information (Name, ID, DOB - fetched from DICOM metadata).
-  //    - Study Information (StudyDate, Modality, StudyID - fetched from DICOM metadata).
-  //    - Report Author (Doctor's name/ID - from user session or input).
-  //    - Doctor's Signature (text or placeholder).
-  //    - Potentially a digital signature if implemented (Rule 5.2).
-  // 4. This tab/section must be conditionally rendered based on user role (`doctor` or `admin`).
-  //    The user role would need to be passed from your Flask Auth service to OHIF (e.g., via JWT payload or a dedicated endpoint).
-
-  // Placeholder for where such an extension might be configured or invoked:
-  // extensions: [
-  //   // ... other extensions
-  //   {
-  //     id: '@klinika-pro/ohif-extension-doctors-report',
-  //     version: '1.0.0',
-  //     // Configuration for the extension, like API endpoints for fetching user roles
-  //   },
-  // ],
-
-  // Notification manager configuration
-  // whiteLabeling.logoComponent may need to be a function component now
-  whiteLabeling: {
-    createLogoComponentFn: function(React) {
-      return React.createElement('div', {
-        style: {
-          display: 'flex',
-          alignItems: 'center',
-          padding: '10px'
-        }
-      }, React.createElement('span', {
-        style: {
-          color: '#ffffff',
-          fontWeight: 'bold',
-          fontSize: '18px'
-        }
-      }, 'Klinika Pro PACS'));
-    }
-  },
-  // Default theme (Rule 4.2)
-  defaultTheme: 'dark', // Ensure this aligns with OHIF's theme capabilities
-
-  // Tool Groups Configuration
-  toolGroupIds: ['default', 'mpr', 'mpr3d', 'segmentation'],
-
-  // Other settings from your technical specification or PROJECT_RULES.md
-  // For example, enabling specific measurement tools or viewport layouts.
-  // These are often configured within cornerstoneExtensionConfig or specific mode/extension settings.
-
-  // Example for enabling specific tools (actual names/config may vary with OHIF version):
-  // cornerstoneExtensionConfig: {
-  //   activeTools: ['Zoom', 'Pan', 'Magnify', 'Wwwc', 'Length', 'Angle', 'Bidirectional', 'EllipticalRoi', 'RectangleRoi'],
-  //   tools: {
-  //     Length: { /* specific config */ },
-  //     // ... other tools
-  //   }
-  // },
-
-  // Session timeout: Handled by Flask Auth and Nginx/UI logic rather than OHIF config directly.
-  // OHIF itself doesn't have a built-in session timeout that logs out, but the UI can react to JWT expiration.
-
-  defaultDataSourceName: 'dicomweb',
-
-  showLoadingIndicator: true,
-
-  hotkeys: [
-    {
-      commandName: 'incrementActiveViewport',
-      label: 'Next Viewport',
-      keys: ['right'],
-    },
-    {
-      commandName: 'decrementActiveViewport',
-      label: 'Previous Viewport',
-      keys: ['left'],
-    },
-    { commandName: 'rotateViewportCW', label: 'Rotate Right', keys: ['r'] },
-    { commandName: 'rotateViewportCCW', label: 'Rotate Left', keys: ['l'] },
-    { commandName: 'invertViewport', label: 'Invert', keys: ['i'] },
-  ],
-
-  // Disable investigational use notifications globally
-  investigationalUseDialog: {
-    enabled: false,
-    show: false
   },
   
-  // Additional watermark/overlay disabling
-  enableStudyList: true,
-  disableInvestigationalUseDialog: true,
-  watermarkText: '',
-  overlayText: '',
-  showWatermark: false,
-  showOverlay: false,
-}; 
+  // Study list configuration
+  studyListConfig: {
+    defaultSort: {
+      field: 'StudyDate',
+      order: 'desc',
+    },
+    
+    // Columns configuration
+    columns: [
+      'PatientName',
+      'PatientId', 
+      'StudyDate',
+      'StudyTime',
+      'StudyDescription',
+      'Modality',
+      'StudyInstanceUID',
+    ],
+    
+    // Search criteria
+    filtersMeta: [
+      {
+        name: 'PatientName',
+        displayName: 'Patient Name',
+        inputType: 'text',
+      },
+      {
+        name: 'PatientId',
+        displayName: 'Patient ID',
+        inputType: 'text',
+      },
+      {
+        name: 'StudyDate',
+        displayName: 'Study Date',
+        inputType: 'date-range',
+      },
+      {
+        name: 'modalities',
+        displayName: 'Modality',
+        inputType: 'text',
+      },
+      {
+        name: 'StudyDescription',
+        displayName: 'Study Description',
+        inputType: 'text',
+      },
+    ],
+  },
+  
+  // Additional security and customization options
+  experimentalStudyBrowserSort: true,
+  
+  // Custom branding
+  theme: {
+    primaryColor: '#5a9def',
+    backgroundColor: '#1a1a2e',
+  },
+  
+  // Report configuration (removed some features for security)
+  // Medical reports should be handled by the backend for audit trail
+  investigationalUseDialog: {
+    option: 'never',  // This hides the "Investigational Use" dialog
+    text: ''  // Remove text as well
+  },
+  
+  // Add doctor reports functionality
+  doctorReports: {
+    enabled: true,
+    // Additional configuration can be added here
+    // Configuration for doctor reports functionality:
+    // - Header (e.g., "Clinton Medical - Medical Report").
+    // - Patient info should include Patient Name, Patient ID, Study Date.
+    // - StudyID should also be included in the header for easy identification.
+    // - Report templates can be added.
+    // - Export functionality (PDF) should include branding.
+    // 
+    // PDF export features:
+    // - Should include patient information (name, ID, DOB).
+    // - Should include study date and modality.
+    // - Should include report author and creation date.
+    // - Should include StudyID in the PDF for easy reference.
+    // - Should include institution branding and letterhead.
+    // - Should support multiple languages.
+    
+    pdfExport: {
+      // Header configuration
+      header: {
+        institutionName: 'Clinton Medical PACS',
+        // logo: '/assets/logo.png',  // Optional logo path
+        address: '',  // Optional address
+        phone: '',    // Optional phone
+        email: '',    // Optional email
+      },
+      
+      // Footer configuration
+      footer: {
+        text: 'Generated by Clinton Medical PACS',
+        includeTimestamp: true,
+      },
+      
+      // Report styling
+      styling: {
+        primaryColor: '#5a9def',
+        fontFamily: 'Arial, sans-serif',
+        fontSize: 12,
+      },
+    },
+  },
+  
+  // CORS and security settings
+  cors: true,
+  
+}; console.log('OHIF Configuration loaded successfully for Clinton Medical PACS');
+console.log('Data source configuration:', window.config.dataSources[0]);
+
+if (window.config.dataSources[0]?.configuration?.qidoRoot) {
+  console.log('QIDO Root configured:', window.config.dataSources[0].configuration.qidoRoot);
+} else {
+  console.warn('QIDO Root not properly configured!');
+}
+
+// Add event listener for OHIF app initialization
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('DOM Content Loaded - Applying Clinton Medical customizations...');
+  
+  // Apply custom theme
+  const style = document.createElement('style');
+  style.textContent = `
+    :root {
+      --primary-color: #5a9def;
+      --secondary-color: #4285f4;
+      --background-color: #1a1a2e;
+      --sidebar-color: #16213e;
+    }
+    
+    /* Custom branding styles */
+    .viewport-header {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    }
+    
+    /* Hide download buttons for security */
+    button[title*="Download"], 
+    button[title*="Export"],
+    .download-button,
+    .export-button {
+      display: none !important;
+    }
+    
+    /* Custom logo area */
+    .logo-area {
+      color: var(--primary-color);
+      font-weight: bold;
+    }
+  `;
+  document.head.appendChild(style);
+  
+  // Set page title
+  document.title = 'Clinton Medical PACS';
+  
+  console.log('Clinton Medical customizations applied successfully');
+}); 

@@ -1,4 +1,4 @@
-# 🏥 Klinika Pro PACS - Медицинская Система Архивирования Изображений
+# 🏥 Clinton Medical PACS - Медицинская Система Архивирования Изображений
 
 <div align="center">
 
@@ -22,7 +22,7 @@
 
 ```bash
 # Автоматическая установка для Linux/macOS
-bash <(curl -sSL https://raw.githubusercontent.com/your-repo/klinika-pro-pacs/main/install.sh)
+bash <(curl -sSL https://raw.githubusercontent.com/your-repo/clinton-medical-pacs/main/install.sh)
 ```
 
 **Готово!** Откройте https://localhost
@@ -38,8 +38,8 @@ bash <(curl -sSL https://raw.githubusercontent.com/your-repo/klinika-pro-pacs/ma
 
 ### Шаг 1: Скачать проект
 ```bash
-git clone https://github.com/your-repo/klinika-pro-pacs.git
-cd klinika-pro-pacs
+git clone https://github.com/your-repo/clinton-medical-pacs.git
+cd clinton-medical-pacs
 ```
 
 ### Шаг 2: Запустить установку
@@ -182,14 +182,14 @@ docker-compose ps   # Статус контейнеров
 
 ### Контакты:
 - **Автор**: Tim Hunt (tr00x)
-- **GitHub**: [Issues](https://github.com/your-repo/klinika-pro-pacs/issues)
+- **GitHub**: [Issues](https://github.com/your-repo/clinton-medical-pacs/issues)
 - **Email**: [your-email@example.com]
 
 ---
 
 ## 📄 **Лицензия**
 
-Proprietary License - Klinika Pro PACS  
+Proprietary License - Clinton Medical PACS  
 Copyright © 2024 Tim Hunt (tr00x)
 
 ---
@@ -215,8 +215,8 @@ Copyright © 2024 Tim Hunt (tr00x)
 
 **🏥 Сделано с ❤️ для медицинских учреждений**
 
-[⭐ Поставьте звезду](https://github.com/your-repo/klinika-pro-pacs) • 
-[🍴 Форкните](https://github.com/your-repo/klinika-pro-pacs/fork) • 
-[📢 Поделитесь](https://twitter.com/intent/tweet?text=Check%20out%20Klinika%20Pro%20PACS!)
+[⭐ Поставьте звезду](https://github.com/your-repo/clinton-medical-pacs) • 
+[🍴 Форкните](https://github.com/your-repo/clinton-medical-pacs/fork) • 
+[📢 Поделитесь](https://twitter.com/intent/tweet?text=Check%20out%20Clinton%20Medical%20PACS!)
 
 </div> 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Klinika Pro PACS - DICOM Test Data Upload Script
+# Clinton Medical PACS - DICOM Test Data Upload Script
 # Author: Tim Hunt (tr00x)
 # Version: 1.0
 
@@ -22,7 +22,7 @@ TEST_DATA_DIR="orthanc/dicom-test-data"
 print_banner() {
     echo -e "${BLUE}"
     echo "╔══════════════════════════════════════════════════════════════╗"
-    echo "║                    🏥 KLINIKA PRO PACS 🏥                    ║"
+    echo "║                  🏥 CLINTON MEDICAL PACS 🏥                  ║"
     echo "║               Загрузка Тестовых DICOM Данных               ║"
     echo "║                   Author: Tim Hunt (tr00x)                   ║"
     echo "╚══════════════════════════════════════════════════════════════╝"
@@ -51,9 +51,9 @@ check_orthanc() {
         echo "  1. Docker контейнеры запущены: docker-compose ps"
         echo "  2. Orthanc сервис здоров: docker-compose logs orthanc"
         echo "  3. Порт 8042 доступен: curl http://localhost:8042/system"
-        exit 1
-    fi
-    
+    exit 1
+fi
+
     print_success "Orthanc доступен"
 }
 

@@ -337,7 +337,7 @@ def export_report(current_user, study_uid, report_id):
                 'role': author.role if author else 'Unknown'
             },
             'export_date': datetime.utcnow().isoformat(),
-            'institution': 'Klinika Pro'
+            'institution': 'Clinton Medical'
         }
         
         # Log export

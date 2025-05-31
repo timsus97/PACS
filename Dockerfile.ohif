@@ -26,6 +26,16 @@ RUN chown -R nginx:nginx /usr/share/nginx/html && \
 COPY scripts/ohif-entrypoint.sh /usr/local/bin/ohif-entrypoint.sh
 RUN chmod +x /usr/local/bin/ohif-entrypoint.sh
 
+# Copy custom OHIF configuration
+COPY ./config/ohif/app-config.js /usr/share/nginx/html/app-config.js
+COPY ./config/ohif/customizations.js /usr/share/nginx/html/customizations.js
+
+# Remove INVESTIGATIONAL USE ONLY text from OHIF bundle
+RUN find /usr/share/nginx/html -name "*.js" -type f -exec sed -i 's/INVESTIGATIONAL USE ONLY//g; s/investigational use only//gi; s/INVESTIGATIONAL//g; s/investigational//g; s/Test Investigational/Test Research/g' {} \;
+
+# Copy assets and nginx config
+COPY ./config/ohif/assets/ /usr/share/nginx/html/assets/
+
 # Switch back to nginx user
 USER nginx
 

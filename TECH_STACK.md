@@ -1,7 +1,8 @@
-# Klinika Pro PACS - Technology Stack
+# Clinton Medical PACS - Technology Stack
 
-## 🏥 Project Overview
-**Klinika Pro PACS** is a comprehensive Picture Archiving and Communication System (PACS) built for medical institutions to manage, view, and report on medical imaging studies. The system provides role-based access control, multilingual support, and advanced reporting capabilities.
+## 📋 **Overview**
+
+**Clinton Medical PACS** is a comprehensive Picture Archiving and Communication System (PACS) built for medical institutions to manage, view, and report on medical imaging studies. The system provides role-based access control, multilingual support, and comprehensive doctor reporting functionality.
 
 ---
 
@@ -353,4 +354,4 @@ Werkzeug==2.3.7
 **Last Updated**: December 2024  
 **Project Version**: 1.0  
 **Author**: Tim Hunt (tr00x)  
-**License**: Proprietary - Klinika Pro PACS 
+**License**: Proprietary - Clinton Medical PACS 

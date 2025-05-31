@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Klinika Pro PACS - Automatic Installation Script
+# Clinton Medical PACS - Automatic Installation Script
 # Author: Tim Hunt (tr00x)
 # Version: 1.0
 
@@ -15,7 +15,7 @@ PURPLE='\033[0;35m'
 NC='\033[0m' # No Color
 
 # Configuration
-PROJECT_NAME="Klinika Pro PACS"
+PROJECT_NAME="Clinton Medical PACS"
 PROJECT_VERSION="1.0"
 AUTHOR="Tim Hunt (tr00x)"
 
@@ -23,7 +23,7 @@ AUTHOR="Tim Hunt (tr00x)"
 print_banner() {
     echo -e "${BLUE}"
     echo "╔══════════════════════════════════════════════════════════════╗"
-    echo "║                    🏥 KLINIKA PRO PACS 🏥                    ║"
+    echo "║                  🏥 CLINTON MEDICAL PACS 🏥                  ║"
     echo "║              Автоматическая Установка v1.0                  ║"
     echo "║                   Author: Tim Hunt (tr00x)                   ║"
     echo "╚══════════════════════════════════════════════════════════════╝"
@@ -188,7 +188,7 @@ setup_environment() {
     if [ ! -f .env ]; then
         print_step "Создание файла конфигурации .env..."
         cat > .env << EOF
-# Klinika Pro PACS Configuration
+# Clinton Medical PACS Configuration
 # Generated automatically by install.sh
 
 # Database Configuration
@@ -229,7 +229,7 @@ generate_ssl() {
     
     mkdir -p config/ssl
     
-    if [ ! -f config/ssl/klinika-pacs.crt ]; then
+    if [ ! -f config/ssl/clinton-medical.crt ]; then
         print_step "Создание самоподписанного SSL сертификата..."
         
         # Create OpenSSL config
@@ -243,7 +243,7 @@ prompt = no
 C=RU
 ST=Moscow
 L=Moscow
-O=Klinika Pro
+O=Clinton Medical
 OU=IT Department
 CN=localhost
 
@@ -260,11 +260,11 @@ IP.2 = ::1
 EOF
         
         # Generate private key and certificate
-        openssl req -x509 -newkey rsa:4096 -keyout config/ssl/klinika-pacs.key -out config/ssl/klinika-pacs.crt -days 365 -nodes -config config/ssl/openssl.cnf
+        openssl req -x509 -newkey rsa:4096 -keyout config/ssl/clinton-medical.key -out config/ssl/clinton-medical.crt -days 365 -nodes -config config/ssl/openssl.cnf
         
         # Set permissions
-        chmod 600 config/ssl/klinika-pacs.key
-        chmod 644 config/ssl/klinika-pacs.crt
+        chmod 600 config/ssl/clinton-medical.key
+        chmod 644 config/ssl/clinton-medical.crt
         
         print_success "SSL сертификат создан"
     else

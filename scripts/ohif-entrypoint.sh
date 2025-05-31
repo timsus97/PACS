@@ -40,7 +40,8 @@ fi
 # Inject our configuration and customizations into the original index.html
 echo "Injecting custom configuration into index.html..."
 # Update the title
-sed -i 's|<title>OHIF Viewer</title>|<title>Klinika Pro PACS</title>|g' /usr/share/nginx/html/index.html
+sed -i 's|<title>OHIF Viewer</title>|<title>Clinton Medical PACS</title>|g' /usr/share/nginx/html/index.html
+sed -i 's|OHIF Viewer|Clinton Medical PACS|g' /usr/share/nginx/html/index.html
 
 # Update app-config.js path to use our config directory
 sed -i 's|src="/app-config.js"|src="/config/app-config.js"|g' /usr/share/nginx/html/index.html

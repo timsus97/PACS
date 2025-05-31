@@ -1,4 +1,4 @@
-# Klinika Pro PACS - Git Ignore File
+# Clinton Medical PACS - Git Ignore File
 # Author: Tim Hunt (tr00x)
 
 # Environment variables (sensitive data)
@@ -10,7 +10,7 @@
 volumes/
 data/
 backup/*.tar.gz
-backup/klinika_pacs_*
+backup/clinton_pacs_*
 
 # Logs
 logs/

@@ -1,4 +1,4 @@
-# Klinika Pro PACS - Makefile
+# Clinton Medical PACS - Makefile
 # Author: Tim Hunt (tr00x)
 # Version: 1.0
 
@@ -15,13 +15,13 @@ RED := \033[0;31m
 NC := \033[0m
 
 # Project info
-PROJECT_NAME := "Klinika Pro PACS"
+PROJECT_NAME := "Clinton Medical PACS"
 VERSION := "1.0"
 AUTHOR := "Tim Hunt (tr00x)"
 
 help: ## Показать справку по командам
 	@echo -e "$(BLUE)╔══════════════════════════════════════════════════════════════╗$(NC)"
-	@echo -e "$(BLUE)║                    🏥 KLINIKA PRO PACS 🏥                    ║$(NC)"
+	@echo -e "$(BLUE)║                  🏥 CLINTON MEDICAL PACS 🏥                  ║$(NC)"
 	@echo -e "$(BLUE)║                  Команды управления v1.0                    ║$(NC)"
 	@echo -e "$(BLUE)║                   Author: Tim Hunt (tr00x)                   ║$(NC)"
 	@echo -e "$(BLUE)╚══════════════════════════════════════════════════════════════╝$(NC)"

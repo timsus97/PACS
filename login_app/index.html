@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Вход в систему - Klinika Pro PACS</title>
+    <title>Вход в систему - Clinton Medical PACS</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏥</text></svg>">
     <style>
         * {
             margin: 0;
@@ -13,138 +14,166 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            line-height: 1.6;
         }
 
         .login-container {
             background: rgba(255, 255, 255, 0.95);
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 60px 40px;
             width: 100%;
-            max-width: 400px;
+            max-width: 450px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .logo-container {
-            text-align: center;
-            margin-bottom: 30px;
+        .header {
+            margin-bottom: 40px;
         }
 
         .logo {
-            width: 180px;
-            height: auto;
-            margin-bottom: 10px;
+            font-size: 48px;
+            margin-bottom: 15px;
         }
 
         h1 {
-            color: #333;
-            font-size: 24px;
+            color: #2a5298;
+            font-size: 28px;
+            margin-bottom: 8px;
             font-weight: 600;
-            text-align: center;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 16px;
             margin-bottom: 30px;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            text-align: left;
         }
 
         label {
             display: block;
-            margin-bottom: 5px;
-            color: #555;
+            margin-bottom: 8px;
+            color: #333;
             font-weight: 500;
-        }
-
-        input[type="text"],
-        input[type="password"] {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-
-        input[type="text"]:focus,
-        input[type="password"]:focus {
-            outline: none;
-            border-color: #2a5298;
-        }
-
-        .button {
-            width: 100%;
-            padding: 12px;
-            background: #2a5298;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .button:hover {
-            background: #1e3c72;
-        }
-
-        .button:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-
-        .error-message {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            display: none;
-        }
-
-        .success-message {
-            background: #d4edda;
-            color: #155724;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            display: none;
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 20px;
-            color: #666;
             font-size: 14px;
         }
 
+        input[type="text"],
+        input[type="password"],
+        select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+            background: white;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(42, 82, 152, 0.3);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .error-message {
+            color: #e74c3c;
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid rgba(231, 76, 60, 0.2);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
         .loading {
-            display: inline-block;
+            display: none;
+            margin-top: 20px;
+        }
+
+        .spinner {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #2a5298;
+            border-radius: 50%;
             width: 20px;
             height: 20px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #3498db;
-            border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin-left: 10px;
-            vertical-align: middle;
+            margin: 0 auto;
         }
 
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            color: #999;
+            font-size: 12px;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                margin: 20px;
+                padding: 40px 30px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .subtitle {
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="login-container">
-        <div class="logo-container">
-            <h2 style="color: #2a5298; font-size: 32px; margin-bottom: 5px;">Klinika Pro</h2>
-            <p style="color: #666;">PACS System</p>
+        <div class="header">
+            <div class="logo">🏥</div>
+            <h2 style="color: #2a5298; font-size: 32px; margin-bottom: 5px;">Clinton Medical</h2>
+            <p style="color: #666; font-size: 18px;">PACS System</p>
         </div>
         
         <h1>Вход в систему</h1>
@@ -169,7 +198,7 @@
         </form>
         
         <div class="footer">
-            © 2024 Klinika Pro. Все права защищены.
+            © 2024 Clinton Medical. Все права защищены.
         </div>
     </div>
 

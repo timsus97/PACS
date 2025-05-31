@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Klinika Pro PACS - Backup Script
+# Clinton Medical PACS - Backup Script
 # Author: Tim Hunt (tr00x)
 # Version: 1.0
 
@@ -16,13 +16,13 @@ NC='\033[0m'
 # Configuration
 BACKUP_DIR="backup"
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
-BACKUP_NAME="klinika_pacs_${TIMESTAMP}"
+BACKUP_NAME="clinton_pacs_${TIMESTAMP}"
 BACKUP_PATH="${BACKUP_DIR}/${BACKUP_NAME}"
 
 print_banner() {
     echo -e "${BLUE}"
     echo "╔══════════════════════════════════════════════════════════════╗"
-    echo "║                    🏥 KLINIKA PRO PACS 🏥                    ║"
+    echo "║                  🏥 CLINTON MEDICAL PACS 🏥                  ║"
     echo "║                  Резервное Копирование                      ║"
     echo "║                   Author: Tim Hunt (tr00x)                   ║"
     echo "╚══════════════════════════════════════════════════════════════╝"
@@ -138,8 +138,8 @@ create_backup_info() {
     print_step "Создание информационного файла..."
     
     cat > "$BACKUP_PATH/backup_info.txt" << EOF
-Klinika Pro PACS - Backup Information
-====================================
+Clinton Medical PACS - Backup Information
+======================================
 
 Backup Date: $(date)
 Backup Name: $BACKUP_NAME
@@ -214,13 +214,13 @@ cleanup_old_backups() {
     print_step "Очистка старых резервных копий..."
     
     # Keep only 7 most recent backups
-    local backup_count=$(ls -1 "$BACKUP_DIR"/klinika_pacs_*.tar.gz 2>/dev/null | wc -l)
+    local backup_count=$(ls -1 "$BACKUP_DIR"/clinton_pacs_*.tar.gz 2>/dev/null | wc -l)
     
     if [ "$backup_count" -gt 7 ]; then
         local to_remove=$((backup_count - 7))
         echo "  Найдено $backup_count резервных копий, удаляем $to_remove старых..."
         
-        ls -1t "$BACKUP_DIR"/klinika_pacs_*.tar.gz | tail -n "$to_remove" | while read -r file; do
+        ls -1t "$BACKUP_DIR"/clinton_pacs_*.tar.gz | tail -n "$to_remove" | while read -r file; do
             echo -n "    Удаление $(basename "$file")... "
             rm -f "$file"
             echo -e "${GREEN}✓${NC}"

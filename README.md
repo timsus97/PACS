@@ -5,7 +5,7 @@
 [![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://docker.com)
 [![OHIF](https://img.shields.io/badge/OHIF-Viewer-blue?style=for-the-badge)](https://ohif.org)
 [![Orthanc](https://img.shields.io/badge/Orthanc-DICOM-green?style=for-the-badge)](https://orthanc-server.com)
-[![License](https://img.shields.io/badge/License-Proprietary-red?style=for-the-badge)](LICENSE)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
 **Полноценная PACS система с многоязычной поддержкой и врачебными отчетами**
 
@@ -191,8 +191,11 @@ docker-compose ps   # Статус контейнеров
 
 ## 📄 **Лицензия**
 
-Proprietary License - Clinton Medical PACS  
+MIT License - Clinton Medical PACS  
 Copyright © 2024 Tim Hunt (tr00x)
+
+Разрешается свободное использование, модификация и распространение данного программного обеспечения.
+Подробности смотрите в файле [LICENSE](LICENSE).
 
 ---
 

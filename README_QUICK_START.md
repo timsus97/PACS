@@ -185,4 +185,4 @@ For detailed documentation see: **TECH_STACK.md**
 **Project**: Clinton Medical PACS v1.0  
 **Author**: Tim Hunt (tr00x)  
 **Updated**: December 2024  
-**License**: Proprietary 
+**License**: MIT License 

@@ -354,4 +354,4 @@ Werkzeug==2.3.7
 **Last Updated**: December 2024  
 **Project Version**: 1.0  
 **Author**: Tim Hunt (tr00x)  
-**License**: Proprietary - Clinton Medical PACS 
+**License**: MIT License - Clinton Medical PACS 

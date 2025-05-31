@@ -1,4 +1,4 @@
-# 🏥 Klinika Pro PACS - Quick Start Guide
+# 🏥 Clinton Medical PACS - Quick Start Guide
 
 ## 🚀 Quick Setup
 
@@ -9,8 +9,8 @@
 
 ### 1. Clone & Start
 ```bash
-git clone <repository>
-cd ort_ohif1
+git clone https://github.com/timsus97/PACS.git
+cd PACS
 docker-compose up -d
 ```
 
@@ -56,13 +56,14 @@ Internet → Nginx Proxy → OHIF Viewer
 ## 📁 Project Structure
 
 ```
-ort_ohif1/
+PACS/
 ├── config/
 │   ├── ohif/              # OHIF configuration & customizations
 │   ├── nginx/             # Reverse proxy configuration  
 │   ├── orthanc/           # DICOM server settings
 │   └── ssl/               # SSL certificates
 ├── flask_auth_service/    # Python authentication service
+├── screenshots/           # System screenshots
 ├── docker-compose.yml     # Container orchestration
 ├── TECH_STACK.md         # Detailed technology documentation
 └── README_QUICK_START.md # This file
@@ -173,9 +174,15 @@ docker-compose restart flask_auth_service
 
 For detailed documentation see: **TECH_STACK.md**
 
+### Contacts:
+- **Author**: Tim Hunt (tr00x)  
+- **GitHub**: [Issues](https://github.com/timsus97/PACS/issues)
+- **Email**: tavci57@gmail.com
+- **Telegram**: @tr00x
+
 ---
 
-**Project**: Klinika Pro PACS v1.0  
+**Project**: Clinton Medical PACS v1.0  
 **Author**: Tim Hunt (tr00x)  
 **Updated**: December 2024  
 **License**: Proprietary 

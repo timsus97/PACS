@@ -1,5 +1,6 @@
 # Developer Checklist
 
+
 Use this checklist before committing code or deploying to ensure all project rules are followed.
 
 ## Pre-Commit Checklist

@@ -153,4 +153,4 @@ rm -rf "$RESTORE_TEMP"
 
 log "=== Restore Completed Successfully ===" "$GREEN"
 log "Please verify that all services are working correctly" "$YELLOW"
-log "Default login URL: https://localhost/login" "$YELLOW" 
+log "Default login URL: https://srv853233.hstgr.cloud/login" "$YELLOW"

@@ -70,7 +70,7 @@ wait_for_services() {
         echo -n "."
         sleep 2
         
-        if curl -s -k https://localhost/ > /dev/null 2>&1; then
+        if curl -s -k https://srv853233.hstgr.cloud/ > /dev/null 2>&1; then
             echo ""
             print_success "Система готова!"
             return
@@ -87,8 +87,8 @@ show_access_info() {
     echo -e "${GREEN}🎉 Система запущена!${NC}"
     echo ""
     echo -e "${BLUE}📱 Доступ:${NC}"
-    echo -e "   🌐 Приложение: ${GREEN}https://localhost${NC}"
-    echo -e "   🔐 Вход:       ${GREEN}https://localhost/login${NC}"
+    echo -e "   🌐 Приложение: ${GREEN}https://srv853233.hstgr.cloud${NC}"
+    echo -e "   🔐 Вход:       ${GREEN}https://srv853233.hstgr.cloud/login${NC}"
     echo ""
     echo -e "${BLUE}🔑 Пользователи:${NC}"
     echo -e "   admin/admin, doctor/doctor, operator/operator"

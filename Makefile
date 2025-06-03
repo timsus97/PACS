@@ -30,8 +30,8 @@ help: ## Показать справку по командам
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  $(GREEN)%-15s$(NC) %s\n", $$1, $$2}'
 	@echo ""
 	@echo -e "$(BLUE)🌐 Доступ к системе:$(NC)"
-	@echo -e "  Приложение: $(GREEN)https://localhost$(NC)"
-	@echo -e "  Вход:       $(GREEN)https://localhost/login$(NC)"
+        @echo -e "  Приложение: $(GREEN)https://srv853233.hstgr.cloud$(NC)"
+        @echo -e "  Вход:       $(GREEN)https://srv853233.hstgr.cloud/login$(NC)"
 	@echo ""
 
 install: ## Полная установка системы
@@ -118,12 +118,12 @@ health: ## Проверить здоровье системы
 	@docker-compose ps
 	@echo ""
 	@echo -e "$(YELLOW)Проверка доступности:$(NC)"
-	@echo -n "OHIF Viewer: "
-	@curl -s -k https://localhost/ > /dev/null && echo -e "$(GREEN)✅ OK$(NC)" || echo -e "$(RED)❌ FAIL$(NC)"
+        @echo -n "OHIF Viewer: "
+        @curl -s -k https://srv853233.hstgr.cloud/ > /dev/null && echo -e "$(GREEN)✅ OK$(NC)" || echo -e "$(RED)❌ FAIL$(NC)"
 	@echo -n "Orthanc API: "
-	@curl -s http://localhost:8042/system > /dev/null && echo -e "$(GREEN)✅ OK$(NC)" || echo -e "$(RED)❌ FAIL$(NC)"
-	@echo -n "Flask Auth: "
-	@curl -s http://localhost:5001/health > /dev/null && echo -e "$(GREEN)✅ OK$(NC)" || echo -e "$(RED)❌ FAIL$(NC)"
+        @curl -s http://srv853233.hstgr.cloud:8042/system > /dev/null && echo -e "$(GREEN)✅ OK$(NC)" || echo -e "$(RED)❌ FAIL$(NC)"
+        @echo -n "Flask Auth: "
+        @curl -s http://srv853233.hstgr.cloud:5001/health > /dev/null && echo -e "$(GREEN)✅ OK$(NC)" || echo -e "$(RED)❌ FAIL$(NC)"
 
 shell-db: ## Войти в базу данных PostgreSQL
 	@docker-compose exec db_pacs psql -U orthanc_user -d orthanc

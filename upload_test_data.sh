@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Orthanc URL
-ORTHANC_URL="http://localhost:8042"
+ORTHANC_URL="http://srv853233.hstgr.cloud:8042"
 
 # Function to upload a DICOM file
 upload_dicom() {

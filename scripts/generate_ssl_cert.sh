@@ -16,7 +16,7 @@ openssl req -x509 -newkey rsa:4096 -nodes \
     -keyout "$KEY_FILE" \
     -out "$CERT_FILE" \
     -days 365 \
-    -subj "/C=RU/ST=Moscow/L=Moscow/O=Klinika Pro/OU=IT Department/CN=localhost"
+    -subj "/C=RU/ST=Moscow/L=Moscow/O=Klinika Pro/OU=IT Department/CN=srv853233.hstgr.cloud"
 
 if [ $? -eq 0 ]; then
     echo "SSL certificate generated successfully!"

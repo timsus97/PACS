@@ -209,6 +209,8 @@ JWT_ACCESS_TOKEN_EXPIRES_HOURS_ADMIN=24
 # Network Configuration
 NGINX_PORT_HTTP=80
 NGINX_PORT_HTTPS=443
+DOMAIN_NAME=srv853233.hstgr.cloud
+PUBLIC_IP=31.97.135.47
 
 # Timezone
 TZ=UTC
@@ -245,7 +247,7 @@ ST=Moscow
 L=Moscow
 O=Clinton Medical
 OU=IT Department
-CN=localhost
+CN=srv853233.hstgr.cloud
 
 [v3_req]
 keyUsage = keyEncipherment, dataEncipherment
@@ -253,8 +255,8 @@ extendedKeyUsage = serverAuth
 subjectAltName = @alt_names
 
 [alt_names]
-DNS.1 = localhost
-DNS.2 = *.localhost
+DNS.1 = srv853233.hstgr.cloud
+DNS.2 = *.srv853233.hstgr.cloud
 IP.1 = 127.0.0.1
 IP.2 = ::1
 EOF
@@ -337,7 +339,7 @@ wait_for_services() {
         sleep 2
         
         # Check if services are ready
-        if curl -s -k https://localhost/ > /dev/null 2>&1; then
+        if curl -s -k https://srv853233.hstgr.cloud/ > /dev/null 2>&1; then
             echo ""
             print_success "Все сервисы готовы!"
             return
@@ -356,9 +358,9 @@ print_final_instructions() {
     echo -e "${GREEN}╚══════════════════════════════════════════════════════════════╝${NC}"
     echo ""
     echo -e "${BLUE}📱 Доступ к системе:${NC}"
-    echo -e "   🌐 Основное приложение: ${GREEN}https://localhost${NC}"
-    echo -e "   🔐 Страница входа:      ${GREEN}https://localhost/login${NC}"
-    echo -e "   🏥 Orthanc интерфейс:   ${GREEN}http://localhost:8042${NC}"
+    echo -e "   🌐 Основное приложение: ${GREEN}https://srv853233.hstgr.cloud${NC}"
+    echo -e "   🔐 Страница входа:      ${GREEN}https://srv853233.hstgr.cloud/login${NC}"
+    echo -e "   🏥 Orthanc интерфейс:   ${GREEN}http://srv853233.hstgr.cloud:8042${NC}"
     echo ""
     echo -e "${BLUE}🔑 Учетные данные по умолчанию:${NC}"
     echo -e "   👨‍💼 Администратор: ${GREEN}admin / admin${NC}"

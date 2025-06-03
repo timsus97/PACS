@@ -15,8 +15,8 @@ docker-compose up -d
 ```
 
 ### 2. Access System
-- **Main Application**: https://localhost
-- **Login Page**: https://localhost/login
+- **Main Application**: https://srv853233.hstgr.cloud
+- **Login Page**: https://srv853233.hstgr.cloud/login
 
 ### 3. Default Credentials
 ```

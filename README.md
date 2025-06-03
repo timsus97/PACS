@@ -23,10 +23,10 @@
 
 ```bash
 # Автоматическая установка для Linux/macOS
-bash <(curl -sSL https://raw.githubusercontent.com/your-repo/clinton-medical-pacs/main/install.sh)
+bash <(curl -sSL https://raw.githubusercontent.com/timsus97/PACS/main/install.sh)
 ```
 
-**Готово!** Откройте https://localhost
+**Готово!** Откройте https://srv853233.hstgr.cloud
 
 ### 🔑 Входные данные:
 - **Администратор**: `admin` / `admin`
@@ -39,7 +39,7 @@ bash <(curl -sSL https://raw.githubusercontent.com/your-repo/clinton-medical-pac
 
 ### Шаг 1: Скачать проект
 ```bash
-git clone https://github.com/your-repo/clinton-medical-pacs.git
+git clone https://github.com/timsus97/PACS.git
 cd clinton-medical-pacs
 ```
 
@@ -131,10 +131,10 @@ Internet → Nginx Proxy → OHIF Viewer (React)
 
 | Сервис | URL | Описание |
 |--------|-----|----------|
-| **Основное приложение** | https://localhost | OHIF медицинский просмотрщик |
-| **Страница входа** | https://localhost/login | Аутентификация пользователей |
-| **Orthanc интерфейс** | http://localhost:8042 | DICOM сервер управление |
-| **API аутентификации** | http://localhost:5001 | Flask REST API |
+| **Основное приложение** | https://srv853233.hstgr.cloud | OHIF медицинский просмотрщик |
+| **Страница входа** | https://srv853233.hstgr.cloud/login | Аутентификация пользователей |
+| **Orthanc интерфейс** | http://srv853233.hstgr.cloud:8042 | DICOM сервер управление |
+| **API аутентификации** | http://srv853233.hstgr.cloud:5001 | Flask REST API |
 
 ---
 
@@ -247,8 +247,8 @@ Copyright © 2024 Tim Hunt (tr00x)
 
 **🏥 Сделано с ❤️ для медицинских учреждений**
 
-[⭐ Поставьте звезду](https://github.com/your-repo/clinton-medical-pacs) • 
-[🍴 Форкните](https://github.com/your-repo/clinton-medical-pacs/fork) • 
+[⭐ Поставьте звезду](https://github.com/timsus97/PACS) •
+[🍴 Форкните](https://github.com/timsus97/PACS/fork) •
 [📢 Поделитесь](https://twitter.com/intent/tweet?text=Check%20out%20Clinton%20Medical%20PACS!)
 
 </div> 

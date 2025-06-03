@@ -15,8 +15,8 @@ docker-compose up -d
 ```
 
 ### 2. Доступ к Системе
-- **Основное Приложение**: https://localhost
-- **Страница Входа**: https://localhost/login
+- **Основное Приложение**: https://srv853233.hstgr.cloud
+- **Страница Входа**: https://srv853233.hstgr.cloud/login
 
 ### 3. Учетные Данные по Умолчанию
 ```

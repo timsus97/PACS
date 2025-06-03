@@ -63,21 +63,21 @@ docker-compose ps
 
 # Check health of key services
 # Nginx (root should redirect to OHIF)
-if curl -k -s -f https://localhost/ > /dev/null; then # -k for self-signed certs
+if curl -k -s -f https://srv853233.hstgr.cloud/ > /dev/null; then # -k for self-signed certs
     echo "OHIF Viewer (via Nginx HTTPS) seems accessible." | tee -a $LOG_FILE
 else
     echo "Error: OHIF Viewer (via Nginx HTTPS) is not accessible." | tee -a $LOG_FILE
 fi
 
 # Orthanc (via Nginx)
-if curl -k -s -f https://localhost/orthanc/app/explorer.html > /dev/null; then
+if curl -k -s -f https://srv853233.hstgr.cloud/orthanc/app/explorer.html > /dev/null; then
     echo "Orthanc (via Nginx HTTPS) seems accessible." | tee -a $LOG_FILE
 else
     echo "Error: Orthanc (via Nginx HTTPS) is not accessible." | tee -a $LOG_FILE
 fi
 
 # Flask Auth Service (via Nginx)
-if curl -k -s -f https://localhost/authorize/health > /dev/null; then
+if curl -k -s -f https://srv853233.hstgr.cloud/authorize/health > /dev/null; then
     echo "Flask Auth Service (via Nginx HTTPS) health check passed." | tee -a $LOG_FILE
 else
     echo "Error: Flask Auth Service (via Nginx HTTPS) health check failed." | tee -a $LOG_FILE
@@ -99,6 +99,6 @@ if [[ "$AUTO_LOAD_TEST_DATA" == "true" || "$AUTO_LOAD_TEST_DATA" == "True" ]]; t
 fi
 
 echo "Deployment process finished: ${TIMESTAMP}" | tee -a $LOG_FILE
-echo "System should be accessible at https://${DOMAIN_NAME:-localhost}/"
+echo "System should be accessible at https://${DOMAIN_NAME:-srv853233.hstgr.cloud}/"
 
 exit 0 

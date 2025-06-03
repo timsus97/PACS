@@ -11,7 +11,7 @@
 
 #### Для Linux/macOS:
 ```bash
-bash <(curl -sSL https://your-site.com/install.sh)
+bash <(curl -sSL https://raw.githubusercontent.com/timsus97/PACS/main/install.sh)
 ```
 
 #### Для Windows:
@@ -19,12 +19,12 @@ bash <(curl -sSL https://your-site.com/install.sh)
 2. Открыть PowerShell как администратор
 3. Выполнить:
 ```powershell
-Invoke-WebRequest -Uri "https://your-site.com/install.sh" -OutFile "install.sh"
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/timsus97/PACS/main/install.sh" -OutFile "install.sh"
 bash install.sh
 ```
 
 ### ✅ Готово!
-Откройте https://localhost в браузере
+Откройте https://srv853233.hstgr.cloud в браузере
 
 ---
 

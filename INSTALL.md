@@ -4,14 +4,14 @@
 
 ### Быстрая Установка (1 команда)
 ```bash
-curl -sSL https://raw.githubusercontent.com/your-repo/clinton-medical-pacs/main/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/timsus97/PACS/main/install.sh | bash
 ```
 
 ## 📋 **Ручная Установка**
 
 ### Шаг 1: Скачать проект
 ```bash
-git clone https://github.com/your-repo/clinton-medical-pacs.git
+git clone https://github.com/timsus97/PACS.git
 cd clinton-medical-pacs
 ```
 
@@ -21,9 +21,9 @@ cd clinton-medical-pacs
 
 ```bash
 # 1. Скачать и запустить автоматическую установку
-curl -sSL https://raw.githubusercontent.com/your-repo/klinika-pro-pacs/main/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/timsus97/PACS/main/install.sh | bash
 
-# 2. Готово! Открыть https://localhost
+# 2. Готово! Открыть https://srv853233.hstgr.cloud
 ```
 
 ## 📋 Подробная Инструкция
@@ -48,8 +48,8 @@ curl -sSL https://raw.githubusercontent.com/your-repo/klinika-pro-pacs/main/inst
 #### Способ 1: Скачать проект и установить
 ```bash
 # Клонировать репозиторий
-git clone https://github.com/your-repo/klinika-pro-pacs.git
-cd klinika-pro-pacs
+git clone https://github.com/timsus97/PACS.git
+cd PACS
 
 # Запустить автоматическую установку
 chmod +x install.sh
@@ -59,7 +59,7 @@ chmod +x install.sh
 #### Способ 2: Прямая установка из интернета
 ```bash
 # Скачать и запустить установщик одной командой
-curl -sSL https://raw.githubusercontent.com/your-repo/klinika-pro-pacs/main/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/timsus97/PACS/main/install.sh | bash
 ```
 
 ### 3️⃣ Что Делает Автоматическая Установка
@@ -108,7 +108,7 @@ brew install --cask docker
 #### Шаг 2: Подготовить проект
 ```bash
 # Клонировать проект
-git clone https://github.com/your-repo/klinika-pro-pacs.git
+git clone https://github.com/timsus97/PACS.git
 cd klinika-pro-pacs
 
 # Создать конфигурацию
@@ -131,10 +131,10 @@ docker-compose ps
 
 После установки система будет доступна по адресам:
 
-- **🌐 Основное приложение**: https://localhost
-- **🔐 Страница входа**: https://localhost/login  
-- **🏥 Orthanc интерфейс**: http://localhost:8042
-- **🔧 API аутентификации**: http://localhost:5001
+- **🌐 Основное приложение**: https://srv853233.hstgr.cloud
+- **🔐 Страница входа**: https://srv853233.hstgr.cloud/login
+- **🏥 Orthanc интерфейс**: http://srv853233.hstgr.cloud:8042
+- **🔧 API аутентификации**: http://srv853233.hstgr.cloud:5001
 
 ### 6️⃣ Первый Вход в Систему
 
@@ -144,7 +144,7 @@ docker-compose ps
 - **👨‍💻 Оператор**: `operator` / `operator`
 
 #### Первые шаги:
-1. Откройте https://localhost (игнорируйте предупреждение о сертификате)
+1. Откройте https://srv853233.hstgr.cloud (игнорируйте предупреждение о сертификате)
 2. Войдите как `admin` / `admin`
 3. Загрузите тестовые данные: `./upload.sh`
 4. Откройте исследование и начните работу!
@@ -204,7 +204,7 @@ make ports
 ```
 
 #### Проблема: "SSL Certificate error"
-**Решение**: Это нормально для self-signed сертификатов. Нажмите "Advanced" → "Proceed to localhost"
+**Решение**: Это нормально для self-signed сертификатов. Нажмите "Advanced" → "Proceed to srv853233.hstgr.cloud"
 
 #### Проблема: Медленная загрузка
 **Решение**: 

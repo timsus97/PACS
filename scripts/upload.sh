@@ -3,8 +3,8 @@
 # Script to upload test DICOM files to Orthanc
 # This script should be run from the project root or ensure paths are adjusted.
 
-ORTHANC_URL="http://localhost/orthanc" # Assuming Nginx proxy at /orthanc
-# ORTHANC_URL="http://localhost:${ORTHANC_PORT:-8042}" # Direct to Orthanc (if exposed and no auth issues)
+ORTHANC_URL="http://srv853233.hstgr.cloud/orthanc" # Assuming Nginx proxy at /orthanc
+# ORTHANC_URL="http://srv853233.hstgr.cloud:${ORTHANC_PORT:-8042}" # Direct to Orthanc (if exposed and no auth issues)
 
 # Orthanc credentials (if basic auth is enabled and no JWT is used for this script)
 # ORTHANC_USER="${ORTHANC_USERNAME:-admin_pacs}"

@@ -1,3 +1,4 @@
+// EXTENSIONS FIXED: 
 // OHIF Viewer Configuration for Clinton Medical PACS
 // Author: Tim Hunt (tr00x)
 // Version: 1.0
@@ -24,20 +25,31 @@ window.config = {
   customizationService: {},
   
   // Custom logo configuration
-  // whiteLabeling: {
-  //     createLogoComponentFn: function(React) {
-  //       // Replace with your Clinton Medical logo (e.g., an SVG or an <img> tag)
-  //       return React.createElement('div', {
-  //         style: { color: '#5a9def', fontWeight: 'bold', fontSize: '18px' }
-  //       }, 'Clinton Medical');
-  //       // Alternatively, use an image:
-  //       // return React.createElement('img', {
-  //       //   src: '/assets/logo.png', // Place your logo in public/assets/
-  //       //   alt: 'Clinton Medical',
-  //       //   style: { height: '30px' }
-  //       // });
-  //     },
-  //   },
+  whiteLabeling: {
+    createLogoComponentFn: function(React) {
+      // Replace with Clinton Medical logo
+      return React.createElement('div', {
+        style: { 
+          color: '#5a9def', 
+          fontWeight: 'bold', 
+          fontSize: '18px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px'
+        }
+      }, [
+        React.createElement('span', {
+          key: 'icon',
+          style: {
+            fontSize: '20px'
+          }
+        }, '🏥'),
+        React.createElement('span', {
+          key: 'text'
+        }, 'Clinton Medical PACS')
+      ]);
+    },
+  },
   
   defaultDataSourceName: 'dicomweb',
   dataSources: [

@@ -1,0 +1,17 @@
+{
+  "Name": "PACS Orthanc Server",
+  "StorageDirectory": "/var/lib/orthanc/db",
+  "IndexDirectory": "/var/lib/orthanc/db", 
+  "RemoteAccessAllowed": true,
+  "AuthenticationEnabled": false,
+  "HttpPort": 8042,
+  "DicomPort": 4242,
+  "DicomWeb": {
+    "Enable": true,
+    "Root": "/dicom-web/",
+    "EnableWado": true,
+    "WadoRoot": "/wado",
+    "Ssl": false
+  },
+  "HttpsCACertificates": "/etc/ssl/certs/ca-certificates.crt"
+} 

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clinton Medical PACS - Loading</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0; 
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+        }
+        .loading-container { 
+            text-align: center; 
+            max-width: 500px;
+            padding: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        .logo { 
+            font-size: 2.5em; 
+            margin-bottom: 20px; 
+            font-weight: bold;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255,255,255,0.3);
+            border-top: 5px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .status {
+            font-size: 1.1em;
+            margin-top: 20px;
+        }
+        .nav-buttons {
+            margin-top: 30px;
+        }
+        .nav-button {
+            display: inline-block;
+            margin: 10px;
+            padding: 12px 24px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            border: 2px solid rgba(255,255,255,0.3);
+            transition: all 0.3s ease;
+        }
+        .nav-button:hover {
+            background: rgba(255,255,255,0.3);
+            border-color: rgba(255,255,255,0.5);
+        }
+        .user-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-container">
+        <div class="logo">Clinton Medical PACS</div>
+        <div class="spinner" id="spinner"></div>
+        <div class="status" id="status">Проверка авторизации...</div>
+        <div class="user-info" id="userInfo" style="display: none;"></div>
+        <div class="nav-buttons" id="navButtons" style="display: none;">
+            <a href="/viewer" class="nav-button">📊 DICOM Viewer</a>
+            <a href="/orthanc" class="nav-button">🗃️ DICOM Archive</a>
+            <a href="/monitoring" class="nav-button">📈 Monitoring</a>
+            <a href="#" onclick="logout()" class="nav-button">🚪 Выход</a>
+        </div>
+    </div>
+
+    <script>
+        function checkAuth() {
+            const token = localStorage.getItem('auth_token');
+            const userInfo = localStorage.getItem('user_info');
+            
+            if (!token) {
+                document.getElementById('status').textContent = 'Не авторизован. Перенаправление...';
+                setTimeout(() => window.location.href = '/login', 1500);
+                return;
+            }
+
+            // Проверяем валидность токена
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                const exp = payload.exp * 1000; // Convert to milliseconds
+                
+                if (Date.now() >= exp) {
+                    document.getElementById('status').textContent = 'Токен истек. Перенаправление...';
+                    localStorage.removeItem('auth_token');
+                    localStorage.removeItem('user_info');
+                    setTimeout(() => window.location.href = '/login', 1500);
+                    return;
+                }
+                
+                // Показываем информацию о пользователе
+                if (userInfo) {
+                    const user = JSON.parse(userInfo);
+                    document.getElementById('userInfo').innerHTML = 
+                        `<strong>Добро пожаловать!</strong><br>
+                         Пользователь: ${user.username}<br>
+                         Роль: ${user.role}<br>
+                         Email: ${user.email}`;
+                    document.getElementById('userInfo').style.display = 'block';
+                }
+                
+                document.getElementById('spinner').style.display = 'none';
+                document.getElementById('status').textContent = 'Авторизация успешна! Выберите раздел:';
+                document.getElementById('navButtons').style.display = 'block';
+                
+            } catch (error) {
+                document.getElementById('status').textContent = 'Ошибка токена. Перенаправление...';
+                localStorage.removeItem('auth_token');
+                localStorage.removeItem('user_info');
+                setTimeout(() => window.location.href = '/login', 1500);
+            }
+        }
+        
+        function logout() {
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('user_info');
+            window.location.href = '/login';
+        }
+        
+        // Запускаем проверку при загрузке страницы
+        checkAuth();
+    </script>
+</body>
+</html> 

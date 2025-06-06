@@ -1,0 +1,104 @@
+version: '3.8'
+
+# 🚀 Clinton Medical PACS - Supabase Edition
+# Убираем Flask auth, оставляем только:
+# - Nginx для статики и проксирования  
+# - OHIF с Supabase аутентификацией
+# - Orthanc PACS сервер
+
+services:
+  # 🌐 Nginx - Static files + OHIF proxy
+  nginx:
+    image: nginx:alpine
+    container_name: pacs_nginx_supabase
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./config/nginx/nginx-supabase.conf:/etc/nginx/nginx.conf:ro
+      - ./static:/usr/share/nginx/html/static:ro
+      - ./supabase-login.html:/usr/share/nginx/html/login.html:ro
+      - ./supabase-auth-config.js:/usr/share/nginx/html/auth-config.js:ro
+      - ./ssl-certs:/etc/nginx/ssl:ro
+    networks:
+      - pacs_internal_net
+    depends_on:
+      - ohif_viewer
+      - orthanc
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pacs.rule=Host(`srv853233.hstgr.cloud`)"
+      - "traefik.http.routers.pacs.tls=true"
+
+  # 🔬 OHIF Viewer with Supabase Auth
+  ohif_viewer:
+    image: ohif/viewer:latest
+    container_name: pacs_ohif_supabase
+    environment:
+      - NODE_ENV=production
+      - APP_CONFIG=/usr/share/nginx/html/app-config.js
+    volumes:
+      - ./config/ohif/app-config-supabase.js:/usr/share/nginx/html/app-config.js:ro
+      - ./static/disable_auth.js:/usr/share/nginx/html/disable_auth.js:ro
+    networks:
+      - pacs_internal_net
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=false"
+
+  # 🏥 Orthanc PACS Server (unchanged)
+  orthanc:
+    image: jodogne/orthanc-plugins:latest
+    container_name: pacs_orthanc_server
+    ports:
+      - "4242:4242"  # DICOM port
+      - "8042:8042"  # Web interface
+    volumes:
+      - ./config/orthanc/orthanc.json:/etc/orthanc/orthanc.json:ro
+      - ./orthanc-db:/var/lib/orthanc/db
+      - ./dicom-files:/var/lib/orthanc/dicom:rw
+    networks:
+      - pacs_internal_net
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=false"
+
+  # 📊 PostgreSQL for PACS metadata (optional)
+  postgres:
+    image: postgres:15-alpine
+    container_name: pacs_postgres
+    environment:
+      POSTGRES_DB: orthanc
+      POSTGRES_USER: orthanc
+      POSTGRES_PASSWORD: orthanc_password_2024
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./config/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - pacs_internal_net
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=false"
+
+networks:
+  pacs_internal_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  postgres_data:
+    driver: local
+
+# 🔧 Environment Variables
+x-common-variables: &common-variables
+  TZ: "Europe/Moscow"
+  
+# 🚀 Healthchecks
+x-healthcheck-defaults: &healthcheck-defaults
+  interval: 30s
+  timeout: 10s
+  retries: 3
+  start_period: 60s 

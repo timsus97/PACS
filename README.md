@@ -251,4 +251,169 @@ Copyright © 2024 Tim Hunt (tr00x)
 [🍴 Форкните](https://github.com/your-repo/clinton-medical-pacs/fork) • 
 [📢 Поделитесь](https://twitter.com/intent/tweet?text=Check%20out%20Clinton%20Medical%20PACS!)
 
-</div> 
+</div>
+
+## Latest Update: Dashboard Removal and Direct OHIF Access
+
+This repository contains a complete PACS (Picture Archiving and Communication System) solution with OHIF viewer, Flask authentication, and custom branding.
+
+### Key Features After Update
+- **No Dashboard**: Direct access to OHIF viewer after login
+- **Custom Branding**: Clinton Medical branding throughout the system
+- **Secure Authentication**: Flask-based login system
+- **DICOM Support**: Full DICOM viewing and management
+- **Responsive Design**: Modern, mobile-friendly interface
+
+### System Architecture
+```
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│   Nginx     │    │   Flask     │    │    OHIF     │
+│  (Proxy)    │◄──►│   (Auth)    │◄──►│  (Viewer)   │
+└─────────────┘    └─────────────┘    └─────────────┘
+       │                   │                   │
+       ▼                   ▼                   ▼
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│  SSL/HTTPS  │    │  Sessions   │    │   Orthanc   │
+│ Certificates│    │ Management  │    │  (DICOM)    │
+└─────────────┘    └─────────────┘    └─────────────┘
+```
+
+### Deployment Information
+- **Server**: 31.97.135.47 (srv853233.hstgr.cloud)
+- **OS**: Ubuntu 22.04
+- **Resources**: 16GB RAM, 4 CPU, 200GB disk
+- **Network**: Docker internal network (172.18.0.x)
+
+### Container Services
+1. **pacs_ohif_supabase**: Custom OHIF viewer with Clinton Medical branding
+2. **pacs_flask_auth**: Flask authentication service
+3. **nginx_proxy**: SSL proxy and load balancer
+4. **pacs_orthanc**: DICOM server and database
+
+### Key Changes Made
+
+#### 1. Dashboard Removal
+- Removed dashboard completely
+- Direct redirect from login to OHIF viewer (/)
+- Modified Flask routes to handle root path redirects
+- Updated nginx configuration for proper routing
+
+#### 2. Authentication Flow
+```
+Login (/login) → Authentication → Direct to OHIF (/)
+```
+
+#### 3. Custom Branding Implementation
+- **Header**: "Clinton Medical PACS" instead of OHIF branding
+- **Logo**: Custom Clinton Medical logo
+- **Colors**: Professional medical theme
+- **Hidden Elements**: Investigational use notices removed
+
+#### 4. Configuration Files
+
+**Flask App (flask_auth_service/app.py)**
+- Added root route redirects
+- Removed dashboard route
+- Updated login success handling
+
+**OHIF Config (config/ohif/app-config.js)**
+- Updated server URLs to match domain
+- Added dynamic configuration support
+- Removed extension duplication errors
+
+**Nginx Config (config/nginx/nginx.conf)**
+- Root path serves OHIF directly
+- Updated CSP headers for custom fonts
+- Added CORS support for DICOM API
+- Large file support (2GB max)
+
+**Customizations (config/ohif/customizations.js)**
+- Disabled auto-authentication checks
+- Custom branding CSS and JavaScript
+- MutationObserver for dynamic text replacement
+- Console spam reduction
+
+### DICOM Connection Settings
+
+For connecting medical devices (e.g., Esaote MyLab):
+
+```
+Server IP: 31.97.135.47
+Domain: srv853233.hstgr.cloud
+DICOM Port: 4242
+AE Title: ORTHANC
+Called AE: ORTHANC
+Local AE: ESAOTE (or your device AE)
+Transfer Syntax: Implicit VR Little Endian
+Max File Size: 2GB
+Timeout: 300 seconds
+```
+
+### Quick Start
+
+1. **Clone Repository**
+   ```bash
+   git clone https://github.com/timsus97/PACS.git
+   cd PACS
+   ```
+
+2. **Deploy to Server**
+   ```bash
+   docker-compose up -d
+   ```
+
+3. **Access System**
+   - Login: https://srv853233.hstgr.cloud/login
+   - Direct OHIF: https://srv853233.hstgr.cloud/
+   - Orthanc Admin: https://srv853233.hstgr.cloud:8042
+
+### Security Features
+- SSL/TLS encryption
+- Session-based authentication
+- CSRF protection
+- Content Security Policy headers
+- Secure cookie settings
+
+### File Upload Support
+- Maximum file size: 2GB
+- Timeout settings: 300 seconds
+- Support for large DICOM studies
+- Chunked upload handling
+
+### Troubleshooting
+
+**Common Issues:**
+1. **Login Loops**: Check nginx root route configuration
+2. **Font Loading**: Verify CSP font-src headers
+3. **DICOM Connection**: Ensure port 4242 is accessible
+4. **Large Files**: Check nginx upload limits
+
+**Container Restart:**
+```bash
+docker restart pacs_ohif_supabase pacs_flask_auth nginx_proxy
+```
+
+### Development Notes
+
+**Local Development:**
+- All configuration files are mounted as volumes
+- Changes to configs require container restart
+- Test locally before deploying to production
+
+**Custom Branding:**
+- CSS rules use !important to override React components
+- JavaScript MutationObserver for dynamic content
+- Index.html directly modified for aggressive branding
+
+### Support
+
+For technical support or questions:
+- Check container logs: `docker logs [container_name]`
+- Verify network connectivity between containers
+- Ensure all environment variables are set correctly
+
+---
+
+**Last Updated**: January 2025
+**Version**: 2.0 (Dashboard Removal Update)
+**Tested On**: Ubuntu 22.04, Docker 24.x 

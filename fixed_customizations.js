@@ -1,6 +1,4 @@
-// SPAM FIXED: 
-// CLINTON BRANDING COMPLETE: 1749243451
-// CUSTOMIZATIONS FIXED: 1749242788
+// CSS to hide INVESTIGATIONAL USE ONLY text completely
 (function() {
     const style = document.createElement('style');
     style.textContent = `
@@ -194,7 +192,7 @@ function fetchStudyDataFromOrthanc(studyUID) {
             const parsedData = JSON.parse(cachedData);
             // Use cached data if it's less than 5 minutes old
             if (new Date() - new Date(parsedData.cachedAt) < 5 * 60 * 1000) {
-                // console.log('Using cached study data for:', studyUID);
+                console.log('Using cached study data for:', studyUID);
                 return parsedData.data;
             }
         } catch (error) {
@@ -1094,7 +1092,7 @@ function initializeEventListeners() {
     }
     
     // Check for study changes every 5 seconds (reduced frequency)
-    setInterval(checkForStudyChange, 30000); // Reduced from 5s to 30s
+    setInterval(checkForStudyChange, 5000);
     
     console.log('Event listeners initialized successfully');
     
@@ -1979,52 +1977,82 @@ function addAccountInfoToSettingsMenu() {
     console.log('Account info integration setup complete');
 }
 
-// Function to check if user is authenticated
+// FIXED Function to check if user is authenticated
 function isUserAuthenticated() {
     try {
-        const token = localStorage.getItem('jwt_token') || localStorage.getItem('authToken');
-        if (!token) return false;
+        const token = localStorage.getItem('authToken') || localStorage.getItem('jwt_token');
         
-        // Check if token is valid (not expired)
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        const currentTime = Math.floor(Date.now() / 1000);
-        
-        if (payload.exp && payload.exp < currentTime) {
-            // Token expired, remove it
-            localStorage.removeItem('jwt_token');
-            localStorage.removeItem('authToken');
-            localStorage.removeItem('user_session');
+        // If no token, not authenticated
+        if (!token) {
+            console.log('No auth token found');
             return false;
         }
         
-        return true;
+        // Check for our simple token from Flask auth
+        if (token === 'valid_admin_token_123') {
+            console.log('Valid Flask auth token found');
+            return true;
+        }
+        
+        // Try to handle JWT tokens (fallback for future compatibility)
+        try {
+            if (token.includes('.')) {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                const currentTime = Math.floor(Date.now() / 1000);
+                
+                if (payload.exp && payload.exp < currentTime) {
+                    // Token expired, remove it
+                    localStorage.removeItem('authToken');
+                    localStorage.removeItem('jwt_token');
+                    console.log('JWT token expired');
+                    return false;
+                }
+                
+                console.log('Valid JWT token found');
+                return true;
+            }
+        } catch (jwtError) {
+            console.log('Token is not a valid JWT, checking as simple token');
+        }
+        
+        // For any other token, assume authenticated if it exists
+        if (token.length > 0) {
+            console.log('Non-empty token found, assuming authenticated');
+            return true;
+        }
+        
+        return false;
+        
     } catch (error) {
         console.error('Error checking authentication:', error);
-        // Clear invalid tokens
-        localStorage.removeItem('jwt_token');
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('user_session');
         return false;
     }
 }
 
 // Function to redirect to login if not authenticated
 function checkAuthenticationOnLoad() {
-    // AUTO AUTH DISABLED - no automatic login redirect
-    return;
+    // Only check on main pages, not on login page
+    if (window.location.pathname === '/login') {
+        return;
+    }
+    
+    if (!isUserAuthenticated()) {
+        console.log('User not authenticated, redirecting to login...');
+        window.location.href = '/login';
+    }
 }
 
 // Initialize when page loads
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function() {
         forceEnglishLanguage();
-        checkAuthenticationOnLoad(); // AUTO AUTH ENABLED
+        checkAuthenticationOnLoad();
         createDoctorReportElements();
         setTimeout(addAccountInfoToSettingsMenu, 2000);
     });
 } else {
     forceEnglishLanguage();
-    checkAuthenticationOnLoad(); // AUTO AUTH ENABLED
+    checkAuthenticationOnLoad();
     setTimeout(createDoctorReportElements, 1000);
     setTimeout(addAccountInfoToSettingsMenu, 3000);
 }
@@ -2051,8 +2079,15 @@ function forceEnglishLanguage() {
 
 // Function to redirect to login if not authenticated
 function checkAuthenticationOnLoad() {
-    // AUTO AUTH DISABLED - no automatic login redirect
-    return;
+    // Only check on main pages, not on login page
+    if (window.location.pathname === '/login') {
+        return;
+    }
+    
+    if (!isUserAuthenticated()) {
+        console.log('User not authenticated, redirecting to login...');
+        window.location.href = '/login';
+    }
 }
 
 // Initialize the report system when DOM is ready
@@ -2068,7 +2103,7 @@ function initReportSystem() {
                 // Check for study changes
                 const currentStudy = getCurrentStudyData();
                 if (currentStudy && currentStudy.studyInstanceUID !== 'Unknown') {
-                    // console.log('Study detected in viewport:', currentStudy.patientName);
+                    console.log('Study detected in viewport:', currentStudy.patientName);
                 }
             }
         });
@@ -2164,98 +2199,4 @@ setInterval(antiInvestigationalPatrol, 500);
 antiInvestigationalPatrol();
 
 // Start the report system
-initReportSystem();// Clinton Medical Branding - Replace OHIF Foundation text
-function replaceBrandingText() {
-    // Skip if already replaced
-    if (document.body.textContent.includes("Clinton Medical PACS") && document.querySelectorAll("*").length > 100) {
-        return;
-    }
-    console.log('Replacing OHIF Foundation branding with Clinton Medical...');
-    
-    // Replace all text nodes containing OHIF Foundation
-    const walker = document.createTreeWalker(
-        document.body,
-        NodeFilter.SHOW_TEXT,
-        null,
-        false
-    );
-    
-    let node;
-    const replacements = [
-        { from: 'Open Health Imaging Foundation', to: 'Clinton Medical PACS' },
-        { from: 'OHIF', to: 'Clinton Medical' },
-        { from: 'ohif', to: 'Clinton Medical' }
-    ];
-    
-    while (node = walker.nextNode()) {
-        let text = node.textContent;
-        let replaced = false;
-        
-        replacements.forEach(replacement => {
-            if (text.includes(replacement.from)) {
-                text = text.replace(new RegExp(replacement.from, 'g'), replacement.to);
-                replaced = true;
-            }
-        });
-        
-        if (replaced) {
-            node.textContent = text;
-            console.log('Replaced branding text:', text);
-        }
-    }
-    
-    // Replace attributes and aria-labels
-    document.querySelectorAll('[aria-label*="OHIF"], [title*="OHIF"], [alt*="OHIF"]').forEach(el => {
-        if (el.getAttribute('aria-label')) {
-            el.setAttribute('aria-label', el.getAttribute('aria-label').replace(/OHIF/g, 'Clinton Medical'));
-        }
-        if (el.getAttribute('title')) {
-            el.setAttribute('title', el.getAttribute('title').replace(/OHIF/g, 'Clinton Medical'));
-        }
-        if (el.getAttribute('alt')) {
-            el.setAttribute('alt', el.getAttribute('alt').replace(/OHIF/g, 'Clinton Medical'));
-        }
-    });
-    
-    console.log('Clinton Medical branding replacement completed');
-}
-
-// Run branding replacement multiple times to catch dynamically loaded content
-function initClintonBranding() {
-    console.log('Initializing Clinton Medical branding...');
-    
-    // Initial replacement
-    setTimeout(replaceBrandingText, 1000);
-    
-    // Repeated replacements for dynamic content
-    
-    // Observe DOM changes and replace branding
-    const observer = new MutationObserver((mutations) => {
-        let shouldReplace = false;
-        mutations.forEach(mutation => {
-            if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-                shouldReplace = true;
-            }
-        });
-        
-        if (shouldReplace) {
-            // Debounced replacement
-            clearTimeout(window.brandingTimeout);
-            window.brandingTimeout = setTimeout(replaceBrandingText, 2000);
-        }
-    });
-    
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true
-    });
-    
-    console.log('Clinton Medical branding observer started');
-}
-
-// Add to initialization
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initClintonBranding);
-} else {
-    initClintonBranding();
-} 
+initReportSystem();

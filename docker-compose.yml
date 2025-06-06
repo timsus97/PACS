@@ -1,174 +1,155 @@
+version: '3.8'
+
 services:
   db_pacs:
-    image: postgres:15-alpine
-    container_name: pacs_db
-    hostname: db_pacs
+    image: postgres:15
+    container_name: clinton_postgres
+    hostname: postgres_db
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-orthanc}
-      POSTGRES_USER: ${POSTGRES_USER:-orthanc_user}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change_this_very_secret_password_for_postgres}
-      TZ: ${TZ:-UTC}
+      POSTGRES_DB: ${POSTGRES_DB:-pacs_db}
+      POSTGRES_USER: ${POSTGRES_USER:-pacs_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ClintonPACS2024!SecureDB}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --lc-collate=C --lc-ctype=C"
     volumes:
-      - pacs_db_data:/var/lib/postgresql/data
-      - ./logs/postgres:/var/log/postgresql # Optional: for persistent logs
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      - pacs_internal_net
-
-  orthanc:
-    image: orthancteam/orthanc:24.10.1
-    container_name: pacs_orthanc
-    hostname: orthanc_pacs
-    depends_on:
-      db_pacs:
-        condition: service_healthy
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
-      - "8042:8042"
-      - "4242:4242"
-    volumes:
-      - ./config/orthanc/orthanc.json:/etc/orthanc/orthanc.json:ro
-      - pacs_orthanc_data:/var/lib/orthanc/db # Orthanc working data (can be large)
-      - ./orthanc/dicom-test-data:/var/lib/orthanc/dicom-test-data:ro # For upload.sh
-      - ./logs/orthanc:/var/log/orthanc # Orthanc application logs
-    environment:
-      ORTHANC_USERNAME: ${ORTHANC_USERNAME:-admin_pacs}
-      ORTHANC_PASSWORD: ${ORTHANC_PASSWORD:-change_this_very_secret_password_for_orthanc_admin}
-      ORTHANC__POSTGRESQL__ENABLE: "true"
-      ORTHANC__POSTGRESQL__HOST: "db_pacs"
-      ORTHANC__POSTGRESQL__PORT: "5432"
-      ORTHANC__POSTGRESQL__DATABASE: "${POSTGRES_DB:-orthanc}"
-      ORTHANC__POSTGRESQL__USERNAME: "${POSTGRES_USER:-orthanc_user}"
-      ORTHANC__POSTGRESQL__PASSWORD: "${POSTGRES_PASSWORD:-change_this_very_secret_password_for_postgres}"
-      ORTHANC__POSTGRESQL__LOCK: "true" # Recommended for concurrent access
-      # For other plugins like DICOMweb, Authorization, Compression, Storage Commitment - configure in orthanc.json
-      TZ: ${TZ:-UTC}
+      - "5432:5432"
+    networks:
+      - pacs_network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8042/app/explorer.html || exit 1"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-pacs_user}"]
       interval: 30s
       timeout: 10s
-      retries: 3
-    networks:
-      - pacs_internal_net
+      retries: 5
 
-  flask_auth_service:
-    build:
-      context: ./flask_auth_service
-      dockerfile: Dockerfile
-    container_name: pacs_flask_auth
-    hostname: flask_auth_pacs
+  orthanc:
+    image: orthancteam/orthanc:24.1.2
+    container_name: clinton_orthanc
+    hostname: orthanc_server
     depends_on:
-      db_pacs:
-        condition: service_healthy
+      - db_pacs
     environment:
-      FLASK_APP: app.py
-      FLASK_ENV: production # Set to development for debugging
-      FLASK_DEBUG: 0 # Set to 1 for development debugging
-      SECRET_KEY: ${FLASK_AUTH_SECRET_KEY:-a_very_strong_and_unique_secret_key_for_flask}
-      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-another_super_secret_key_for_jwt_tokens_please_change}
-      JWT_ACCESS_TOKEN_EXPIRES_HOURS_DOCTOR_OPERATOR: ${JWT_ACCESS_TOKEN_EXPIRES_HOURS_DOCTOR_OPERATOR:-8}
-      JWT_ACCESS_TOKEN_EXPIRES_HOURS_ADMIN: ${JWT_ACCESS_TOKEN_EXPIRES_HOURS_ADMIN:-24}
-      ORTHANC_URL: http://orthanc:8042 # Internal URL to Orthanc for auth checks
-      ORTHANC_USERNAME: ${ORTHANC_USERNAME:-admin_pacs} # For service-to-service auth if needed
-      ORTHANC_PASSWORD: ${ORTHANC_PASSWORD:-change_this_very_secret_password_for_orthanc_admin}
-      # PostgreSQL Database Configuration
-      DATABASE_URL: postgresql://${POSTGRES_USER:-orthanc_user}:${POSTGRES_PASSWORD:-change_this_very_secret_password_for_postgres}@db_pacs:5432/${POSTGRES_DB:-orthanc}
-      POSTGRES_HOST: db_pacs
-      POSTGRES_PORT: 5432
-      POSTGRES_DB: ${POSTGRES_DB:-orthanc}
-      POSTGRES_USER: ${POSTGRES_USER:-orthanc_user}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change_this_very_secret_password_for_postgres}
-      TZ: ${TZ:-UTC}
+      ORTHANC__NAME: "Clinton Medical PACS"
+      ORTHANC__DICOM_SERVER_ENABLED: "true"
+      ORTHANC__DICOM_AET: "CLINTON_PACS"
+      ORTHANC__DICOM_PORT: 4242
+      ORTHANC__DICOM_SCU_TIMEOUT: 300
+      ORTHANC__HTTP_TIMEOUT: 600
+      ORTHANC__HTTP_PORT: 8042
+      ORTHANC__POSTGRESQL_HOST: db_pacs
+      ORTHANC__POSTGRESQL_DATABASE: ${POSTGRES_DB:-pacs_db}
+      ORTHANC__POSTGRESQL_USERNAME: ${POSTGRES_USER:-pacs_user}
+      ORTHANC__POSTGRESQL_PASSWORD: ${POSTGRES_PASSWORD:-ClintonPACS2024!SecureDB}
+      ORTHANC__POSTGRESQL_ENABLE_INDEX: "true"
+      ORTHANC__POSTGRESQL_ENABLE_STORAGE: "true"
+      ORTHANC__REGISTERED_USERS: |
+        {
+          "admin": "admin",
+          "doctor": "doctor123",
+          "operator": "operator123"
+        }
     volumes:
-      - ./flask_auth_service:/app # Mount code for development, remove for production image build
-      - pacs_flask_auth_data:/app/data # Persist SQLite DB and other app data
-      - ./logs/flask_auth:/var/log/flask_auth # Application logs
+      - orthanc_data:/var/lib/orthanc/db
+      - ./config/orthanc/orthanc.json:/etc/orthanc/orthanc.json:ro
     ports:
-      - "5001:5000"
+      - "4242:4242"
+      - "8042:8042"
+    networks:
+      - pacs_network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:5000/health || exit 1"]
-      interval: 20s
+      test: ["CMD", "curl", "-f", "http://localhost:8042/app/explorer.html"]
+      interval: 30s
       timeout: 10s
-      retries: 3
-    networks:
-      - pacs_internal_net
+      retries: 5
 
   ohif_viewer:
     build:
       context: .
       dockerfile: Dockerfile.ohif
-    container_name: pacs_ohif_viewer
-    hostname: ohif_pacs
+    container_name: clinton_ohif
+    hostname: ohif_viewer
+    depends_on:
+      - orthanc
+    environment:
+      NODE_ENV: production
+      ORTHANC_URL: https://srv853233.hstgr.cloud/orthanc
+      DICOMWEB_ENDPOINT: https://srv853233.hstgr.cloud/orthanc/dicom-web
     volumes:
       - ./config/ohif/app-config.js:/usr/share/nginx/html/app-config.js:ro
       - ./config/ohif/customizations.js:/usr/share/nginx/html/customizations.js:ro
-      - ./config/ohif/doctor-report-extension.js:/usr/share/nginx/html/extensions/doctor-report-extension.js:ro
-      - ./config/ohif/assets:/usr/share/nginx/html/assets:ro
-      - ./logs/ohif:/var/log/ohif
-    environment:
-      APP_CONFIG: '/usr/share/nginx/html/config/app-config.js'
-      PUBLIC_URL: '/'
+    ports:
+      - "3001:80"
+    networks:
+      - pacs_network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:80 || exit 1"]
+      test: ["CMD", "curl", "-f", "http://localhost/"]
       interval: 30s
       timeout: 10s
       retries: 3
+
+  flask_auth_service:
+    build:
+      context: ./auth_service
+      dockerfile: Dockerfile
+    container_name: clinton_auth
+    hostname: flask_auth
+    depends_on:
+      - db_pacs
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-pacs_user}:${POSTGRES_PASSWORD:-ClintonPACS2024!SecureDB}@db_pacs:5432/${POSTGRES_DB:-pacs_db}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-ClintonPACSJWTSecret2024!VerySecureKey}
+      FLASK_ENV: production
+      ORTHANC_URL: http://orthanc:8042
+      ORTHANC_USERNAME: admin
+      ORTHANC_PASSWORD: admin
+    volumes:
+      - ./auth_service:/app
+    ports:
+      - "5000:5000"
     networks:
-      - pacs_internal_net
+      - pacs_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   nginx:
-    image: nginx:1.25-alpine
-    container_name: pacs_nginx_proxy
-    hostname: nginx_pacs
+    image: nginx:alpine
+    container_name: clinton_nginx
+    hostname: nginx_proxy
     depends_on:
-      - orthanc
       - ohif_viewer
+      - orthanc
       - flask_auth_service
-    ports:
-      - "${NGINX_PORT_HTTP:-80}:80"
-      - "${NGINX_PORT_HTTPS:-443}:443"
     volumes:
       - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./config/nginx/conf.d:/etc/nginx/conf.d:ro # For site-specific configs
-      - ./config/ssl:/etc/nginx/ssl:ro # SSL certificates
-      - ./login_app:/usr/share/nginx/html/login:ro # Login page
-      - ./logs/nginx:/var/log/nginx # Nginx access and error logs
-      - ./debug_report_button.html:/etc/nginx/debug_report_button.html:ro
-      - ./config:/usr/share/nginx/html/config:ro # Config files
-      # Consider a volume for Let's Encrypt certificates if using certbot
-      # - certbot_certs:/etc/letsencrypt
-      # - certbot_www:/var/www/certbot # For ACME challenges
+      - ./config/nginx/ssl:/etc/nginx/ssl
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - pacs_network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost/health || service nginx status || exit 1"]
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
       interval: 30s
       timeout: 10s
       retries: 3
-    networks:
-      - pacs_internal_net
 
 volumes:
-  pacs_db_data:
+  postgres_data:
     driver: local
-  pacs_orthanc_data:
+  orthanc_data:
     driver: local
-  pacs_flask_auth_data: # New volume for Flask auth service data
-    driver: local
-  # certbot_certs: # If using Let's Encrypt with Certbot
-  #   driver: local
-  # certbot_www:
-  #   driver: local
 
 networks:
-  pacs_internal_net:
+  pacs_network:
     driver: bridge
-    ipam:
-      config:
-        - subnet: 172.18.0.0/16
+    name: pacs_network

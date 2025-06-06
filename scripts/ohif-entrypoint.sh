@@ -40,17 +40,18 @@ fi
 # Inject our configuration and customizations into the original index.html
 echo "Injecting custom configuration into index.html..."
 # Update the title
-sed -i 's|<title>OHIF Viewer</title>|<title>Clinton Medical PACS</title>|g' /usr/share/nginx/html/index.html
-sed -i 's|OHIF Viewer|Clinton Medical PACS|g' /usr/share/nginx/html/index.html
+sed -i 's@<title>OHIF Viewer</title>@<title>Clinton Medical PACS</title>@g' /usr/share/nginx/html/index.html
+sed -i 's@OHIF Viewer@Clinton Medical PACS@g' /usr/share/nginx/html/index.html
 
 # Update app-config.js path to use our config directory
-sed -i 's|src="/app-config.js"|src="/config/app-config.js"|g' /usr/share/nginx/html/index.html
+sed -i 's@src="/app-config.js"@src="/config/app-config.js"@g' /usr/share/nginx/html/index.html
 
 # Add our customizations script before the closing body tag
-sed -i 's|</body>|<script src="/config/customizations.js"></script></body>|g' /usr/share/nginx/html/index.html
+sed -i 's@</body>@<script src="/config/customizations.js"></script></body>@g' /usr/share/nginx/html/index.html
 
 # Add custom styles for branding
-CUSTOM_STYLES='<style>:root{--primary-color:#2a5298;--secondary-color:#1e3c72;--highlight-color:#4b7bec;}
+cat > /usr/share/nginx/html/config/custom-styles.css << 'EOF'
+:root{--primary-color:#2a5298;--secondary-color:#1e3c72;--highlight-color:#4b7bec;}
 /* Hide all investigational use notifications and watermarks */
 .research-use-notification,.investigational-use,[class*="InvestigationalUse"],[class*="investigational"],[class*="research-use"],
 [data-cy*="investigational"],[data-testid*="investigational"],
@@ -77,8 +78,10 @@ div[style*="INVESTIGATIONAL"],
 *:before,*:after{content:none!important;}
 .OHIFHeader{background:var(--secondary-color)!important;}
 #root:empty::before{content:"Загрузка Klinika Pro PACS...";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:24px;color:var(--primary-color);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
-</style>'
-sed -i "s|</head>|${CUSTOM_STYLES}</head>|g" /usr/share/nginx/html/index.html
+EOF
+
+# Add link to custom styles in head
+sed -i 's@</head>@<link rel="stylesheet" href="/config/custom-styles.css"></head>@g' /usr/share/nginx/html/index.html
 
 # Ensure proper permissions
 echo "Setting permissions..."

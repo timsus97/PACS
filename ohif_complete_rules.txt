@@ -1,0 +1,67 @@
+        # OHIF static files on root path (comprehensive coverage)
+        location /manifest.json {
+            proxy_pass http://ohif_backend/manifest.json;
+            proxy_set_header Host $host;
+        }
+        
+        location /app-config.js {
+            proxy_pass http://ohif_backend/app-config.js;
+            proxy_set_header Host $host;
+        }
+        
+        location /init-service-worker.js {
+            proxy_pass http://ohif_backend/init-service-worker.js;
+            proxy_set_header Host $host;
+        }
+        
+        # CSS files with hashes (e.g., 10.81258732728ed501c1ae.css)
+        location ~ ^/[a-f0-9]+\.[a-f0-9]+\.css$ {
+            proxy_pass http://ohif_backend$request_uri;
+            proxy_set_header Host $host;
+            expires 1h;
+            add_header Cache-Control "public, immutable";
+        }
+        
+        location ~ ^/app\.[a-f0-9]+\.css$ {
+            proxy_pass http://ohif_backend$request_uri;
+            proxy_set_header Host $host;
+            expires 1h;
+            add_header Cache-Control "public, immutable";
+        }
+        
+        # JS bundle files with hashes (e.g., vendors~app.bundle.d73abe98496fdeef0859.js)
+        location ~ ^/vendors~app\.bundle\.[a-f0-9]+\.js$ {
+            proxy_pass http://ohif_backend$request_uri;
+            proxy_set_header Host $host;
+            expires 1h;
+            add_header Cache-Control "public, immutable";
+        }
+        
+        location ~ ^/app\.bundle\.[a-f0-9]+\.js$ {
+            proxy_pass http://ohif_backend$request_uri;
+            proxy_set_header Host $host;
+            expires 1h;
+            add_header Cache-Control "public, immutable";
+        }
+        
+        # Workbox and service worker files
+        location ~ ^/workbox.*\.(js|mjs)$ {
+            proxy_pass http://ohif_backend$request_uri;
+            proxy_set_header Host $host;
+        }
+        
+        # All assets folder
+        location /assets/ {
+            proxy_pass http://ohif_backend/assets/;
+            proxy_set_header Host $host;
+            expires 24h;
+            add_header Cache-Control "public";
+        }
+        
+        # Any other CSS/JS files
+        location ~ ^/.*\.(css|js|mjs)$ {
+            proxy_pass http://ohif_backend$request_uri;
+            proxy_set_header Host $host;
+            expires 1h;
+            add_header Cache-Control "public";
+        } 

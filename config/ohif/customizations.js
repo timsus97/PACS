@@ -1,6 +1,7 @@
 // SPAM FIXED: 
 // CLINTON BRANDING COMPLETE: 1749243451
 // CUSTOMIZATIONS FIXED: 1749242788
+// LOGOUT FIXED: 1749247892
 (function() {
     const style = document.createElement('style');
     style.textContent = `
@@ -1836,30 +1837,9 @@ function addAccountInfoToSettingsMenu() {
         };
         
         if (confirm(confirmText[getCurrentLanguage()] || confirmText['en'])) {
-            console.log('Performing logout...');
+            console.log('Performing complete logout...');
             
-            // Clear all authentication data
-            localStorage.removeItem('jwt_token');
-            localStorage.removeItem('authToken');
-            localStorage.removeItem('user_session');
-            localStorage.removeItem('refresh_token');
-            localStorage.removeItem('pacs_forced_language');
-            
-            // Clear any session cookies
-            document.cookie.split(";").forEach(function(c) { 
-                document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
-            });
-            
-            // Show logout message
-            const logoutMessages = {
-                'en': 'Logging out...',
-                'ru': 'Выход из системы...',
-                'es': 'Cerrando sesión...',
-                'fr': 'Déconnexion...',
-                'de': 'Abmeldung...'
-            };
-            
-            // Create logout overlay
+            // Create logout overlay immediately
             const overlay = document.createElement('div');
             overlay.style.cssText = `
                 position: fixed;
@@ -1880,17 +1860,80 @@ function addAccountInfoToSettingsMenu() {
             overlay.innerHTML = `
                 <div style="text-align: center;">
                     <div style="font-size: 48px; margin-bottom: 20px;">👋</div>
-                    <div style="font-size: 24px; margin-bottom: 10px;">${logoutMessages['en']}</div>
-                    <div style="font-size: 14px; color: #ccc;">Redirecting to login page...</div>
+                    <div style="font-size: 24px; margin-bottom: 10px;">Clearing all sessions...</div>
+                    <div style="font-size: 14px; color: #ccc;">Complete logout in progress...</div>
                 </div>
             `;
             
             document.body.appendChild(overlay);
             
-            // Redirect to login page after short delay
+            // Complete session clearing function
+            function clearAllAuthData() {
+                // Clear localStorage completely
+                const keysToRemove = [];
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && (
+                        key.includes('supabase') ||
+                        key.includes('auth') ||
+                        key.includes('token') ||
+                        key.includes('session') ||
+                        key.includes('sb-') ||
+                        key === 'jwt_token' ||
+                        key === 'authToken' ||
+                        key === 'user_session' ||
+                        key === 'refresh_token'
+                    )) {
+                        keysToRemove.push(key);
+                    }
+                }
+                
+                keysToRemove.forEach(key => {
+                    localStorage.removeItem(key);
+                    console.log('Removed from localStorage:', key);
+                });
+                
+                // Clear sessionStorage completely
+                const sessionKeysToRemove = [];
+                for (let i = 0; i < sessionStorage.length; i++) {
+                    const key = sessionStorage.key(i);
+                    if (key && (
+                        key.includes('supabase') ||
+                        key.includes('auth') ||
+                        key.includes('token') ||
+                        key.includes('session') ||
+                        key.includes('sb-')
+                    )) {
+                        sessionKeysToRemove.push(key);
+                    }
+                }
+                
+                sessionKeysToRemove.forEach(key => {
+                    sessionStorage.removeItem(key);
+                    console.log('Removed from sessionStorage:', key);
+                });
+                
+                // Clear all cookies
+                document.cookie.split(";").forEach(function(c) { 
+                    document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+                });
+                
+                // Clear any Supabase auth if available
+                if (window.supabase && window.supabase.auth && window.supabase.auth.signOut) {
+                    window.supabase.auth.signOut();
+                }
+                
+                console.log('All authentication data cleared!');
+            }
+            
+            // Execute clearing
+            clearAllAuthData();
+            
+            // Redirect to login with force logout parameter
             setTimeout(() => {
-                window.location.href = '/login';
-            }, 1500);
+                // Use location.replace to avoid back button issues
+                window.location.replace('/login?logout=true&t=' + Date.now());
+            }, 2000);
         }
     }
     

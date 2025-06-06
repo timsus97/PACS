@@ -1,0 +1,2 @@
+events { worker_connections 1024; }
+http { upstream ohif { server pacs_ohif_viewer:80; } server { listen 80; location /orthanc/ { proxy_pass http://pacs_orthanc:8042/; proxy_set_header Host $host; } location / { proxy_pass http://ohif; proxy_set_header Host $host; } } }

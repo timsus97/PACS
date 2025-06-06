@@ -1,0 +1,115 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: 'pacs-monitor'
+    environment: 'production'
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - alertmanager:9093
+
+# Load rules once and periodically evaluate them
+rule_files:
+  - "alerts.yml"
+
+# Scrape configurations
+scrape_configs:
+  # Prometheus self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # System metrics from node exporter
+  - job_name: 'node'
+    static_configs:
+      - targets: ['node_exporter:9100']
+    metric_relabel_configs:
+      - source_labels: [__name__]
+        regex: 'node_cpu_seconds_total|node_memory_.*|node_filesystem_.*|node_disk_.*|node_network_.*'
+        action: keep
+
+  # Docker containers metrics
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor:8080']
+    metric_relabel_configs:
+      - source_labels: [container_label_com_docker_compose_service]
+        target_label: service
+      - source_labels: [__name__]
+        regex: 'container_cpu_.*|container_memory_.*|container_network_.*|container_fs_.*'
+        action: keep
+
+  # PostgreSQL metrics
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres_exporter:9187']
+    metric_relabel_configs:
+      - source_labels: [__name__]
+        regex: 'pg_database_size_bytes|pg_stat_database_.*|pg_stat_user_tables_.*|pg_replication_.*'
+        action: keep
+
+  # Nginx metrics
+  - job_name: 'nginx'
+    static_configs:
+      - targets: ['nginx_exporter:9113']
+    metric_relabel_configs:
+      - source_labels: [__name__]
+        regex: 'nginx_http_requests_total|nginx_http_request_duration_seconds|nginx_connections_.*'
+        action: keep
+
+  # Flask auth service metrics
+  - job_name: 'flask_auth'
+    static_configs:
+      - targets: ['flask_auth_service:5000']
+    metrics_path: '/metrics'
+    metric_relabel_configs:
+      - source_labels: [__name__]
+        regex: 'flask_http_request_duration_seconds_.*|flask_http_request_total|flask_auth_.*'
+        action: keep
+
+  # Orthanc metrics via custom exporter
+  - job_name: 'orthanc'
+    static_configs:
+      - targets: ['pacs_exporter:9200']
+    metrics_path: '/metrics/orthanc'
+    metric_relabel_configs:
+      - source_labels: [__name__]
+        regex: 'orthanc_studies_count|orthanc_patients_count|orthanc_disk_size_mb|orthanc_dicom_.*'
+        action: keep
+
+  # OHIF Viewer metrics (frontend performance)
+  - job_name: 'ohif'
+    static_configs:
+      - targets: ['pacs_exporter:9200']
+    metrics_path: '/metrics/ohif'
+    metric_relabel_configs:
+      - source_labels: [__name__]
+        regex: 'ohif_load_time_seconds|ohif_render_time_seconds|ohif_active_sessions'
+        action: keep
+
+  # Application-specific metrics
+  - job_name: 'pacs_app'
+    static_configs:
+      - targets: ['pacs_exporter:9200']
+    metrics_path: '/metrics/application'
+    metric_relabel_configs:
+      - source_labels: [__name__]
+        regex: 'pacs_report_generation_seconds|pacs_auth_requests_total|pacs_data_access_total|pacs_api_response_time_seconds'
+        action: keep
+
+# Performance-specific metric configurations
+metric_relabel_configs:
+  # Calculate request rates
+  - source_labels: [__name__]
+    regex: '.*_total'
+    target_label: __tmp_rate_interval
+    replacement: '1m'
+    
+  # Add environment labels
+  - source_labels: [__address__]
+    target_label: environment
+    replacement: 'production' 

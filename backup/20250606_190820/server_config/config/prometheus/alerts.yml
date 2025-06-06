@@ -1,0 +1,185 @@
+groups:
+  - name: performance_alerts
+    interval: 30s
+    rules:
+      # OHIF Viewer performance (must load ≤ 3 seconds)
+      - alert: OHIFSlowLoad
+        expr: histogram_quantile(0.95, ohif_load_time_seconds_bucket) > 3
+        for: 5m
+        labels:
+          severity: warning
+          service: ohif
+        annotations:
+          summary: "OHIF Viewer loading slowly"
+          description: "OHIF Viewer 95th percentile load time is {{ $value }}s (threshold: 3s)"
+
+      # DICOM rendering performance (must render ≤ 2 seconds)  
+      - alert: DICOMSlowRender
+        expr: histogram_quantile(0.95, ohif_render_time_seconds_bucket) > 2
+        for: 5m
+        labels:
+          severity: warning
+          service: dicom
+        annotations:
+          summary: "DICOM image rendering slow"
+          description: "DICOM 95th percentile render time is {{ $value }}s (threshold: 2s)"
+
+      # API response time (must respond ≤ 500ms)
+      - alert: APISlowResponse
+        expr: |
+          histogram_quantile(0.95, 
+            rate(flask_http_request_duration_seconds_bucket[5m])
+          ) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+          service: api
+        annotations:
+          summary: "API response time exceeds threshold"
+          description: "API 95th percentile response time is {{ $value }}s (threshold: 0.5s)"
+
+      # PDF generation performance (must generate ≤ 10 seconds)
+      - alert: PDFSlowGeneration
+        expr: histogram_quantile(0.95, pacs_report_generation_seconds_bucket) > 10
+        for: 5m
+        labels:
+          severity: warning
+          service: reports
+        annotations:
+          summary: "PDF generation taking too long"
+          description: "PDF generation 95th percentile time is {{ $value }}s (threshold: 10s)"
+
+  - name: resource_alerts
+    interval: 30s
+    rules:
+      # High CPU usage
+      - alert: HighCPUUsage
+        expr: |
+          100 - (avg by (instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage detected"
+          description: "CPU usage is {{ $value }}% on {{ $labels.instance }}"
+
+      # High memory usage
+      - alert: HighMemoryUsage
+        expr: |
+          (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage detected"
+          description: "Memory usage is {{ $value }}% on {{ $labels.instance }}"
+
+      # Database connection pool exhaustion
+      - alert: DatabaseConnectionPoolExhausted
+        expr: pg_stat_database_numbackends / pg_settings_max_connections > 0.8
+        for: 5m
+        labels:
+          severity: critical
+          service: database
+        annotations:
+          summary: "Database connection pool near exhaustion"
+          description: "{{ $value | humanizePercentage }} of max connections in use"
+
+      # Disk space low
+      - alert: DiskSpaceLow
+        expr: |
+          (node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"}) * 100 < 20
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Low disk space"
+          description: "Only {{ $value }}% disk space remaining on {{ $labels.instance }}"
+
+  - name: service_alerts
+    interval: 30s
+    rules:
+      # Service down
+      - alert: ServiceDown
+        expr: up == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Service {{ $labels.job }} is down"
+          description: "{{ $labels.instance }} has been down for more than 2 minutes"
+
+      # High error rate
+      - alert: HighErrorRate
+        expr: |
+          rate(flask_http_request_total{status=~"5.."}[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+          service: api
+        annotations:
+          summary: "High API error rate"
+          description: "Error rate is {{ $value | humanizePercentage }}"
+
+      # Authentication failures
+      - alert: HighAuthFailureRate
+        expr: |
+          rate(flask_auth_failures_total[5m]) > 10
+        for: 5m
+        labels:
+          severity: warning
+          service: security
+        annotations:
+          summary: "High authentication failure rate"
+          description: "{{ $value }} auth failures per second"
+
+  - name: dicom_alerts
+    interval: 30s
+    rules:
+      # DICOM storage full
+      - alert: DICOMStorageFull
+        expr: orthanc_disk_size_mb / 1024 > 900
+        for: 10m
+        labels:
+          severity: critical
+          service: orthanc
+        annotations:
+          summary: "DICOM storage approaching limit"
+          description: "DICOM storage is at {{ $value }}GB"
+
+      # DICOM upload failures
+      - alert: DICOMUploadFailures
+        expr: rate(orthanc_dicom_upload_failures_total[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+          service: orthanc
+        annotations:
+          summary: "DICOM upload failures detected"
+          description: "{{ $value }} upload failures per second"
+
+  - name: backup_alerts
+    interval: 1h
+    rules:
+      # Backup age check
+      - alert: BackupTooOld
+        expr: time() - pacs_last_backup_timestamp > 86400 * 2
+        for: 1h
+        labels:
+          severity: warning
+          service: backup
+        annotations:
+          summary: "Backup is too old"
+          description: "Last backup was {{ $value | humanizeDuration }} ago"
+
+      # Backup size anomaly
+      - alert: BackupSizeAnomaly
+        expr: |
+          abs(pacs_backup_size_bytes - pacs_backup_size_bytes offset 1d) / pacs_backup_size_bytes offset 1d > 0.2
+        for: 1h
+        labels:
+          severity: warning
+          service: backup
+        annotations:
+          summary: "Backup size anomaly detected"
+          description: "Backup size changed by {{ $value | humanizePercentage }}" 

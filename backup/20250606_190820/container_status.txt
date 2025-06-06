@@ -1,0 +1,5 @@
+NAMES                 IMAGE                             STATUS          PORTS
+pacs_orthanc_server   jodogne/orthanc-plugins:latest    Up 3 hours      0.0.0.0:4242->4242/tcp, :::4242->4242/tcp, 0.0.0.0:8042->8042/tcp, :::8042->8042/tcp
+pacs_ohif_supabase    clinton-pacs_ohif_viewer:latest   Up 4 minutes    80/tcp, 8080/tcp
+pacs_flask_auth       pacs_flask_auth:fixed             Up 4 hours      0.0.0.0:5000->5000/tcp, :::5000->5000/tcp
+nginx_final           nginx:alpine                      Up 34 minutes   0.0.0.0:80->80/tcp, :::80->80/tcp, 0.0.0.0:443->443/tcp, :::443->443/tcp

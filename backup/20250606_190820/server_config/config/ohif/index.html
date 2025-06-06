@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="application-name" content="Clinton Medical PACS" />
+    <meta name="description" content="Clinton Medical PACS - Medical Imaging System" />
+    <meta name="keywords" content="medical, imaging, DICOM, PACS, radiology, healthcare" />
+    <meta name="apple-mobile-web-app-title" content="Clinton Medical PACS" />
+    <title>Clinton Medical PACS</title>
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Clinton Medical PACS" />
+    <meta property="og:description" content="Advanced Medical Imaging System" />
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Clinton Medical PACS" />
+    <meta name="twitter:description" content="Advanced Medical Imaging System" />
+    
+    <!-- Custom styles for Clinton Medical branding -->
+    <link rel="stylesheet" href="/config/custom-styles.css">
+    
+    <style>
+        :root {
+            --primary-color: #5a9def;
+            --secondary-color: #4285f4;
+            --background-color: #1a1a2e;
+            --sidebar-color: #16213e;
+            --text-color: #ffffff;
+            --accent-color: #28a745;
+        }
+        
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+                'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+                sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+        
+        #root:empty::before {
+            content: "Загрузка Clinton Medical PACS...";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            color: var(--primary-color);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <noscript>
+        You need to enable JavaScript to run this app.
+    </noscript>
+    
+    <div id="root"></div>
+    
+    <!-- OHIF will inject its scripts here -->
+    
+    <!-- Load our customizations after OHIF loads -->
+    <script src="/customizations.js"></script>
+</body>
+</html> 

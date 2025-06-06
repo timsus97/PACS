@@ -1,0 +1,169 @@
+/* AGGRESSIVE BRANDING FINAL: 1749244052 */
+/* CLINTON BRANDING ADDED: 1749243442 */
+/* Clinton Medical Branding - Replace OHIF Foundation */
+
+/* Replace OHIF Foundation logo and text with Clinton Medical */
+[class*="ohif-logo"]:before,
+[class*="Logo"]:before,
+.headerSection-0-2-5:before,
+.applicationName-0-2-8:before,
+header [class*="logo"]:before,
+header [class*="Logo"]:before {
+    content: "Clinton Medical PACS" !important;
+    color: white !important;
+    font-size: 18px !important;
+    font-weight: bold !important;
+    text-decoration: none !important;
+}
+
+/* Hide original Foundation logo/text */
+[class*="ohif-logo"],
+[class*="Logo"],
+.headerSection-0-2-5,
+.applicationName-0-2-8,
+header [class*="logo"],
+header [class*="Logo"],
+svg[class*="logo"],
+svg[class*="Logo"] {
+    visibility: hidden !important;
+    position: relative !important;
+}
+
+/* Force Clinton Medical text to show */
+[class*="ohif-logo"]:after,
+[class*="Logo"]:after,
+.headerSection-0-2-5:after,
+.applicationName-0-2-8:after,
+header [class*="logo"]:after,
+header [class*="Logo"]:after {
+    content: "Clinton Medical PACS" !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    color: white !important;
+    font-size: 18px !important;
+    font-weight: bold !important;
+    visibility: visible !important;
+    z-index: 1000 !important;
+}
+
+/* Header customization */
+.OHIFHeader,
+[class*="Header"],
+header {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%) !important;
+    border-bottom: 3px solid #4b7bec !important;
+}
+
+/* Additional text replacements */
+[data-cy*="ohif"]:before,
+[aria-label*="OHIF"]:before {
+    content: "Clinton Medical" !important;
+}
+
+/* Hide "Open Health Imaging Foundation" text specifically */
+*:contains("Open Health Imaging Foundation"),
+*:contains("OHIF"),
+span:contains("Open Health Imaging Foundation"),
+div:contains("Open Health Imaging Foundation") {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+/* Force replace any remaining OHIF text */
+*[class*="ohif"] {
+    font-size: 0 !important;
+}
+
+*[class*="ohif"]:after {
+    content: "Clinton Medical" !important;
+    font-size: 16px !important;
+    color: white !important;
+    font-weight: bold !important;
+} /* AGGRESSIVE Clinton Medical Branding - Force Override React Components */
+/* Hide all OHIF logo components completely */
+header,
+.header,
+[class*="header"],
+[class*="Header"],
+[role="banner"] {
+    position: relative !important;
+}
+
+/* Replace header content with Clinton Medical */
+header::before,
+.header::before,
+[class*="header"]::before,
+[class*="Header"]::before,
+[role="banner"]::before {
+    content: "Clinton Medical PACS" !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 20px !important;
+    transform: translateY(-50%) !important;
+    color: white !important;
+    font-size: 20px !important;
+    font-weight: bold !important;
+    z-index: 10000 !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+}
+
+/* Hide original content */
+header > *,
+.header > *,
+[class*="header"] > *,
+[class*="Header"] > *,
+[role="banner"] > * {
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+/* Specific targeting for OHIF components */
+[data-cy*="ohif"],
+[aria-label*="ohif"],
+[class*="ohif"],
+[class*="foundation"],
+svg[class*="logo"],
+img[alt*="logo"],
+img[src*="logo"] {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+/* Header background */
+header,
+.header,
+[class*="header"],
+[class*="Header"],
+[role="banner"] {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%) !important;
+    border-bottom: 3px solid #4b7bec !important;
+    min-height: 60px !important;
+}
+
+/* Override any React inline styles */
+header[style],
+.header[style],
+[class*="header"][style],
+[class*="Header"][style] {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%) !important;
+}
+
+/* Force Clinton Medical text on any header element */
+.headerSection,
+.applicationName,
+[class*="HeaderSection"],
+[class*="ApplicationName"] {
+    font-size: 0 !important;
+}
+
+.headerSection::after,
+.applicationName::after,
+[class*="HeaderSection"]::after,
+[class*="ApplicationName"]::after {
+    content: "Clinton Medical PACS" !important;
+    font-size: 18px !important;
+    color: white !important;
+    font-weight: bold !important;
+    display: inline-block !important;
+} 

@@ -1,0 +1,108 @@
+filebeat.config:
+  modules:
+    path: ${path.config}/modules.d/*.yml
+    reload.enabled: false
+
+filebeat.inputs:
+  # Docker container logs
+  - type: container
+    paths:
+      - '/var/lib/docker/containers/*/*.log'
+    processors:
+      - add_docker_metadata:
+          host: "unix:///var/run/docker.sock"
+      - decode_json_fields:
+          fields: ["message"]
+          target: "json"
+          overwrite_keys: true
+    fields:
+      log_type: docker
+    fields_under_root: true
+
+  # Application logs
+  - type: log
+    enabled: true
+    paths:
+      - /logs/nginx/*.log
+    tags: ["nginx"]
+    fields:
+      service: nginx
+    fields_under_root: true
+    
+  - type: log
+    enabled: true
+    paths:
+      - /logs/orthanc/*.log
+    tags: ["orthanc"]
+    fields:
+      service: orthanc
+    fields_under_root: true
+    
+  - type: log
+    enabled: true
+    paths:
+      - /logs/flask_auth/*.log
+    tags: ["flask_auth"]
+    fields:
+      service: flask_auth
+    fields_under_root: true
+    json.keys_under_root: true
+    json.add_error_key: true
+    
+  - type: log
+    enabled: true
+    paths:
+      - /logs/postgres/*.log
+    tags: ["postgres"]
+    fields:
+      service: postgres
+    fields_under_root: true
+
+processors:
+  - add_host_metadata:
+      when.not.contains.tags: forwarded
+  - add_docker_metadata: ~
+  - add_kubernetes_metadata: ~
+  
+  # Drop sensitive information
+  - drop_fields:
+      fields: ["password", "token", "jwt", "secret", "authorization"]
+      ignore_missing: true
+
+# Output to Logstash
+output.logstash:
+  hosts: ["logstash:5044"]
+  
+# Direct output to Elasticsearch (alternative)
+# output.elasticsearch:
+#   hosts: ["elasticsearch:9200"]
+#   protocol: "http"
+#   index: "filebeat-%{[agent.version]}-%{+yyyy.MM.dd}"
+
+# Kibana settings
+setup.kibana:
+  host: "kibana:5601"
+
+# Enable modules
+filebeat.modules:
+  - module: nginx
+    access:
+      enabled: true
+      var.paths: ["/logs/nginx/access.log*"]
+    error:
+      enabled: true
+      var.paths: ["/logs/nginx/error.log*"]
+      
+  - module: postgresql
+    log:
+      enabled: true
+      var.paths: ["/logs/postgres/*.log"]
+
+# Logging
+logging.level: info
+logging.to_files: true
+logging.files:
+  path: /var/log/filebeat
+  name: filebeat
+  keepfiles: 7
+  permissions: 0644 

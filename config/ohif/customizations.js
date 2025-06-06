@@ -5,6 +5,7 @@
 // USER ROLES FIXED: 1749248954
 // ACCESS CONTROL SYSTEM: 1749249827
 // ADMIN PANEL FIXED: 1749250193
+// QUICK ADMIN COMMANDS: 1749250845
 (function() {
     const style = document.createElement('style');
     style.textContent = `
@@ -2228,6 +2229,126 @@ function addAccountInfoToSettingsMenu() {
         window.clintonPACS.openAdminPanel = () => {
             AccessControl.createAdminPanel();
         };
+        
+        // ============================================
+        // 🚀 QUICK ADMIN COMMANDS (Global shortcuts)
+        // ============================================
+        
+        // Quick admin panel access
+        window.adminpanel = () => AccessControl.createAdminPanel();
+        window.admin = () => AccessControl.createAdminPanel();
+        window.ap = () => AccessControl.createAdminPanel();
+        
+        // Quick role management
+        window.setrole = (email, role) => {
+            if (!email || !role) {
+                console.log('💡 Usage: setrole("user@email.com", "admin|doctor|operator")');
+                console.log('📧 Examples:');
+                console.log('   setrole("doctor@clinic.com", "admin")');
+                console.log('   setrole("tech@clinic.com", "operator")');
+                return;
+            }
+            window.clintonPACS.setUserRole(email, role);
+            console.log(`✅ Role ${role} set for ${email}`);
+        };
+        
+        // Quick user info check
+        window.userinfo = async () => {
+            const info = await getCurrentUserInfo();
+            console.log('👤 Current User Info:', info);
+            return info;
+        };
+        window.me = window.userinfo; // Even shorter alias
+        
+        // Quick permissions check
+        window.permissions = async () => {
+            const perms = await AccessControl.getUserPermissions();
+            console.log('🔑 Current Permissions:', perms);
+            return perms;
+        };
+        window.perms = window.permissions; // Shorter alias
+        
+        // Quick access control refresh
+        window.refresh = async () => {
+            await AccessControl.applyRestrictions();
+            console.log('🔄 Access control refreshed');
+        };
+        
+        // Help command
+        window.adminhelp = () => {
+            console.log(`
+🔐 CLINTON MEDICAL PACS - ADMIN COMMANDS
+========================================
+
+📋 QUICK ACCESS:
+  adminpanel()     - Open admin panel
+  admin()          - Same as adminpanel()
+  ap()             - Even shorter alias
+
+👥 USER MANAGEMENT:
+  setrole("email", "role")  - Set user role
+  userinfo()       - Show current user info
+  me()             - Same as userinfo()
+  permissions()    - Show current permissions
+  perms()          - Same as permissions()
+
+🔧 SYSTEM:
+  refresh()        - Refresh access control
+  adminhelp()      - Show this help
+  help()           - Same as adminhelp()
+
+📧 ROLE EXAMPLES:
+  setrole("doctor@clinic.com", "admin")
+  setrole("nurse@clinic.com", "doctor") 
+  setrole("tech@clinic.com", "operator")
+
+🎯 AVAILABLE ROLES:
+  admin      - Full system access
+  doctor     - Medical staff access
+  operator   - Technical support access
+            `);
+        };
+        window.help = window.adminhelp; // Alias
+        
+        // Quick role shortcuts
+        window.makeadmin = (email) => {
+            if (!email) {
+                console.log('💡 Usage: makeadmin("user@email.com")');
+                return;
+            }
+            window.clintonPACS.setUserRole(email, 'admin');
+            console.log(`👑 ${email} is now an Administrator`);
+        };
+        
+        window.makedoctor = (email) => {
+            if (!email) {
+                console.log('💡 Usage: makedoctor("user@email.com")');
+                return;
+            }
+            window.clintonPACS.setUserRole(email, 'doctor');
+            console.log(`👨‍⚕️ ${email} is now a Doctor`);
+        };
+        
+        window.makeoperator = (email) => {
+            if (!email) {
+                console.log('💡 Usage: makeoperator("user@email.com")');
+                return;
+            }
+            window.clintonPACS.setUserRole(email, 'operator');
+            console.log(`🔧 ${email} is now an Operator`);
+        };
+        
+        // Show welcome message for admins
+        setTimeout(async () => {
+            const userInfo = await getCurrentUserInfo();
+            if (userInfo.rawRole === 'admin') {
+                console.log(`
+🔐 Welcome Administrator: ${userInfo.name}!
+Type 'adminhelp()' or 'help()' for quick commands.
+Quick start: adminpanel() to open admin panel.
+                `);
+            }
+        }, 2000);
     }
     
     async function getCurrentUserInfo() {

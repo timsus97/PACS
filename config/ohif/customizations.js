@@ -3,6 +3,7 @@
 // CUSTOMIZATIONS FIXED: 1749242788
 // LOGOUT FIXED: 1749247892
 // USER ROLES FIXED: 1749248954
+// ACCESS CONTROL SYSTEM: 1749249827
 (function() {
     const style = document.createElement('style');
     style.textContent = `
@@ -1220,7 +1221,13 @@ function initializeEventListeners() {
         }
     }
     
-    function createNewReport() {
+    async function createNewReport() {
+        // Check if user has permission to create reports
+        const canCreate = await window.clintonPACS.AccessControl.checkAccess('createReports');
+        if (!canCreate) {
+            return;
+        }
+        
         if (!currentPatientData) {
             showMessage(t('selectPatient'), 'error');
             return;
@@ -1259,7 +1266,13 @@ function initializeEventListeners() {
         showMessage(isNew ? t('reportCreated') : t('reportLoaded'), 'info');
     }
     
-    function saveCurrentReport() {
+    async function saveCurrentReport() {
+        // Check if user has permission to edit reports
+        const canEdit = await window.clintonPACS.AccessControl.checkAccess('editReports');
+        if (!canEdit) {
+            return;
+        }
+        
         if (!currentReportId || !currentPatientData) {
             showMessage(t('noPatientData'), 'error');
             return;
@@ -1322,7 +1335,13 @@ function initializeEventListeners() {
         }
     }
     
-    function deleteCurrentReport() {
+    async function deleteCurrentReport() {
+        // Check if user has permission to delete reports
+        const canDelete = await window.clintonPACS.AccessControl.checkAccess('deleteReports');
+        if (!canDelete) {
+            return;
+        }
+        
         if (!currentReportId || !currentPatientData) {
             showMessage(t('noActiveReport'), 'error');
             return;
@@ -1841,15 +1860,332 @@ function addAccountInfoToSettingsMenu() {
         return localStorage.getItem(roleKey);
     }
     
+    // Access control system
+    const AccessControl = {
+        // Define permissions for each role
+        permissions: {
+            admin: {
+                viewDICOM: true,
+                createReports: true,
+                editReports: true,
+                deleteReports: true,
+                exportReports: true,
+                manageUsers: true,
+                systemSettings: true,
+                uploadDICOM: true,
+                viewStatistics: true,
+                accessAllStudies: true,
+                modifyPatientData: true,
+                adminPanel: true
+            },
+            doctor: {
+                viewDICOM: true,
+                createReports: true,
+                editReports: true,
+                deleteReports: true,  // Can delete own reports only
+                exportReports: true,
+                manageUsers: false,
+                systemSettings: false,
+                uploadDICOM: true,
+                viewStatistics: true,
+                accessAllStudies: true,
+                modifyPatientData: false,
+                adminPanel: false
+            },
+            operator: {
+                viewDICOM: true,
+                createReports: false,
+                editReports: false,
+                deleteReports: false,
+                exportReports: false,
+                manageUsers: false,
+                systemSettings: false,
+                uploadDICOM: true,
+                viewStatistics: true,
+                accessAllStudies: false,  // Limited access
+                modifyPatientData: false,
+                adminPanel: false
+            }
+        },
+        
+        // Check if user has specific permission
+        hasPermission: async function(permission) {
+            const userInfo = await getCurrentUserInfo();
+            const role = userInfo.rawRole || 'doctor';
+            return this.permissions[role]?.[permission] || false;
+        },
+        
+        // Get all permissions for current user
+        getUserPermissions: async function() {
+            const userInfo = await getCurrentUserInfo();
+            const role = userInfo.rawRole || 'doctor';
+            return this.permissions[role] || this.permissions.doctor;
+        },
+        
+        // Apply access restrictions to UI elements
+        applyRestrictions: async function() {
+            const permissions = await this.getUserPermissions();
+            const userInfo = await getCurrentUserInfo();
+            
+            console.log(`🔒 Applying access restrictions for role: ${userInfo.rawRole}`);
+            console.log(`📋 Permissions:`, permissions);
+            
+            // Hide/disable report functions for operators
+            if (!permissions.createReports) {
+                this.hideReportFunctions();
+            }
+            
+            // Add role indicator to interface
+            this.addRoleIndicator(userInfo);
+            
+            // Apply study access restrictions
+            if (!permissions.accessAllStudies) {
+                this.restrictStudyAccess();
+            }
+            
+            return permissions;
+        },
+        
+        // Hide report-related functions
+        hideReportFunctions: function() {
+            const reportButton = document.getElementById('doctorReportBtn');
+            if (reportButton) {
+                reportButton.style.display = 'none';
+                console.log('🚫 Report functions hidden for this role');
+            }
+            
+            // Hide report panel if it exists
+            const reportPanel = document.getElementById('doctorReportPanel');
+            if (reportPanel) {
+                reportPanel.style.display = 'none';
+            }
+        },
+        
+        // Add role indicator to interface
+        addRoleIndicator: function(userInfo) {
+            // Remove existing indicator
+            const existingIndicator = document.getElementById('roleIndicator');
+            if (existingIndicator) {
+                existingIndicator.remove();
+            }
+            
+            // Create role indicator
+            const roleIndicator = document.createElement('div');
+            roleIndicator.id = 'roleIndicator';
+            roleIndicator.style.cssText = `
+                position: fixed;
+                top: 10px;
+                right: 10px;
+                background: ${this.getRoleColor(userInfo.rawRole)};
+                color: white;
+                padding: 6px 12px;
+                border-radius: 20px;
+                font-size: 12px;
+                font-weight: 600;
+                z-index: 9999;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+                pointer-events: none;
+            `;
+            
+            const roleIcon = {
+                admin: '👑',
+                doctor: '👨‍⚕️',
+                operator: '🔧'
+            };
+            
+            roleIndicator.innerHTML = `${roleIcon[userInfo.rawRole] || '👤'} ${userInfo.role}`;
+            document.body.appendChild(roleIndicator);
+            
+            console.log(`🎭 Role indicator added: ${userInfo.role}`);
+        },
+        
+        // Get color for role
+        getRoleColor: function(role) {
+            const colors = {
+                admin: '#dc3545',     // Red
+                doctor: '#28a745',    // Green  
+                operator: '#007bff'   // Blue
+            };
+            return colors[role] || '#6c757d';
+        },
+        
+        // Restrict study access for operators
+        restrictStudyAccess: function() {
+            console.log('🔒 Applying study access restrictions');
+            
+            // Add observer to hide sensitive studies
+            const observer = new MutationObserver(() => {
+                const studyElements = document.querySelectorAll('[data-cy*="study"], [class*="study"], [class*="Study"]');
+                studyElements.forEach(element => {
+                    const studyText = element.textContent || '';
+                    // Hide studies containing sensitive keywords
+                    if (studyText.includes('Private') || studyText.includes('Confidential')) {
+                        element.style.opacity = '0.5';
+                        element.style.pointerEvents = 'none';
+                        element.title = 'Access restricted for your role';
+                    }
+                });
+            });
+            
+            observer.observe(document.body, { childList: true, subtree: true });
+        },
+        
+        // Check if user can perform action
+        checkAccess: async function(action, showError = true) {
+            const hasAccess = await this.hasPermission(action);
+            
+            if (!hasAccess && showError) {
+                this.showAccessDeniedMessage(action);
+            }
+            
+            return hasAccess;
+        },
+        
+        // Show access denied message
+        showAccessDeniedMessage: function(action) {
+            const message = document.createElement('div');
+            message.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(220, 53, 69, 0.95);
+                color: white;
+                padding: 20px 30px;
+                border-radius: 10px;
+                font-size: 16px;
+                font-weight: 600;
+                z-index: 99999;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+                text-align: center;
+            `;
+            
+            message.innerHTML = `
+                <div style="font-size: 48px; margin-bottom: 10px;">🚫</div>
+                <div>Access Denied</div>
+                <div style="font-size: 14px; margin-top: 5px; opacity: 0.9;">
+                    Your role doesn't have permission for: ${action}
+                </div>
+            `;
+            
+            document.body.appendChild(message);
+            
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                if (message.parentElement) {
+                    message.remove();
+                }
+            }, 3000);
+        },
+        
+        // Create admin panel for user management (admin only)
+        createAdminPanel: async function() {
+            const hasAdminAccess = await this.hasPermission('manageUsers');
+            if (!hasAdminAccess) {
+                this.showAccessDeniedMessage('manageUsers');
+                return;
+            }
+            
+            const adminPanel = document.createElement('div');
+            adminPanel.id = 'adminPanel';
+            adminPanel.style.cssText = `
+                position: fixed;
+                top: 50px;
+                right: 50px;
+                width: 400px;
+                background: rgba(0, 0, 0, 0.9);
+                border: 2px solid #5a9def;
+                border-radius: 10px;
+                padding: 20px;
+                z-index: 99999;
+                color: white;
+                font-family: Arial, sans-serif;
+            `;
+            
+            adminPanel.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3 style="margin: 0; color: #5a9def;">👑 Admin Panel</h3>
+                    <button id="closeAdminPanel" style="background: #dc3545; color: white; border: none; border-radius: 5px; padding: 5px 10px; cursor: pointer;">✕</button>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <h4>🔑 Role Management</h4>
+                    <input type="email" id="userEmail" placeholder="user@example.com" style="width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                    <select id="userRole" style="width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                        <option value="doctor">👨‍⚕️ Doctor</option>
+                        <option value="admin">👑 Administrator</option>
+                        <option value="operator">🔧 Operator</option>
+                    </select>
+                    <button id="setRoleBtn" style="width: 100%; background: #28a745; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">Set Role</button>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <h4>👥 Current Session Info</h4>
+                    <div id="currentUserInfo" style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 5px; font-size: 12px;"></div>
+                </div>
+                
+                <div>
+                    <h4>🛠️ Admin Tools</h4>
+                    <button id="refreshAccessBtn" style="width: 100%; background: #007bff; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer; margin-bottom: 5px;">🔄 Refresh Access Control</button>
+                    <button id="viewPermissionsBtn" style="width: 100%; background: #6f42c1; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer;">📋 View All Permissions</button>
+                </div>
+            `;
+            
+            document.body.appendChild(adminPanel);
+            
+            // Add event listeners
+            document.getElementById('closeAdminPanel').onclick = () => adminPanel.remove();
+            
+            document.getElementById('setRoleBtn').onclick = () => {
+                const email = document.getElementById('userEmail').value;
+                const role = document.getElementById('userRole').value;
+                if (email && role) {
+                    window.clintonPACS.setUserRole(email, role);
+                    document.getElementById('userEmail').value = '';
+                    this.showAccessDeniedMessage(`Role ${role} set for ${email}`);
+                }
+            };
+            
+            document.getElementById('refreshAccessBtn').onclick = async () => {
+                await this.applyRestrictions();
+                this.showAccessDeniedMessage('Access control refreshed');
+            };
+            
+            document.getElementById('viewPermissionsBtn').onclick = async () => {
+                const permissions = await this.getUserPermissions();
+                console.log('Current permissions:', permissions);
+                alert('Permissions logged to console');
+            };
+            
+            // Show current user info
+            const userInfo = await getCurrentUserInfo();
+            document.getElementById('currentUserInfo').innerHTML = `
+                Email: ${userInfo.email}<br>
+                Role: ${userInfo.role}<br>
+                Source: ${userInfo.isSupabaseUser ? 'Live' : 'Cache'}<br>
+                ID: ${userInfo.userId}
+            `;
+                 }
+     };
+    
     // Add to window for debugging and admin management
     if (typeof window !== 'undefined') {
         window.clintonPACS = window.clintonPACS || {};
         window.clintonPACS.setUserRole = setUserRole;
         window.clintonPACS.determineUserRole = determineUserRole;
+        window.clintonPACS.AccessControl = AccessControl;
         window.clintonPACS.debugUserInfo = async () => {
             const userInfo = await getCurrentUserInfo();
             console.log('Current user info:', userInfo);
             return userInfo;
+        };
+        window.clintonPACS.checkPermissions = async () => {
+            const permissions = await AccessControl.getUserPermissions();
+            console.log('User permissions:', permissions);
+            return permissions;
+        };
+        window.clintonPACS.openAdminPanel = () => {
+            AccessControl.createAdminPanel();
         };
     }
     
@@ -2271,12 +2607,24 @@ if (document.readyState === 'loading') {
         checkAuthenticationOnLoad(); // AUTO AUTH ENABLED
         createDoctorReportElements();
         setTimeout(addAccountInfoToSettingsMenu, 2000);
+        // Initialize access control system
+        setTimeout(async () => {
+            if (window.clintonPACS && window.clintonPACS.AccessControl) {
+                await window.clintonPACS.AccessControl.applyRestrictions();
+            }
+        }, 3000);
     });
 } else {
     forceEnglishLanguage();
     checkAuthenticationOnLoad(); // AUTO AUTH ENABLED
     setTimeout(createDoctorReportElements, 1000);
     setTimeout(addAccountInfoToSettingsMenu, 3000);
+    // Initialize access control system
+    setTimeout(async () => {
+        if (window.clintonPACS && window.clintonPACS.AccessControl) {
+            await window.clintonPACS.AccessControl.applyRestrictions();
+        }
+    }, 4000);
 }
 
 console.log('Doctor Report system loaded - full functionality restored'); 

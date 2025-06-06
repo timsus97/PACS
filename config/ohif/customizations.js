@@ -1787,7 +1787,8 @@ function addAccountInfoToSettingsMenu() {
             'administrator@clintonmedical.com',
             'timhunt@clintonmedical.com',  // Your email gets admin access
             'tim@clintonmedical.com',
-            'hunt@clintonmedical.com'
+            'hunt@clintonmedical.com',
+            'tavci57@gmail.com'  // Tim's actual admin email
         ];
         
         // Check for exact admin email matches first

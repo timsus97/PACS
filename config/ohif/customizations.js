@@ -2,6 +2,7 @@
 // CLINTON BRANDING COMPLETE: 1749243451
 // CUSTOMIZATIONS FIXED: 1749242788
 // LOGOUT FIXED: 1749247892
+// USER ROLES FIXED: 1749248954
 (function() {
     const style = document.createElement('style');
     style.textContent = `
@@ -1658,13 +1659,16 @@ function addAccountInfoToSettingsMenu() {
         
         if (settingsMenu && !settingsMenu.querySelector('.account-info-section')) {
             console.log('Adding account info to settings menu');
-            addAccountSection(settingsMenu);
+            // Call async function properly
+            addAccountSection(settingsMenu).catch(error => {
+                console.error('Error adding account section:', error);
+            });
         }
     }
     
-    function addAccountSection(menuElement) {
-        // Get current user info
-        const currentUser = getCurrentUserInfo();
+    async function addAccountSection(menuElement) {
+        // Get current user info asynchronously
+        const currentUser = await getCurrentUserInfo();
         
         // Create account info section
         const accountSection = document.createElement('div');
@@ -1684,9 +1688,15 @@ function addAccountInfoToSettingsMenu() {
             margin-bottom: 8px;
         `;
         
+        // Add debug info to see what data we get
+        console.log('🔍 Current user data:', currentUser);
+        
+        // Show source indicator
+        const sourceIndicator = currentUser.isSupabaseUser ? '🟢 Live' : '🔴 Cache';
+        
         userInfo.innerHTML = `
             <div style="color: #5a9def; font-weight: 600; font-size: 14px; margin-bottom: 4px;">
-                👤 ${currentUser.name}
+                👤 ${currentUser.name} ${sourceIndicator}
             </div>
             <div style="color: #ccc; font-size: 12px;">
                 ${currentUser.role} • ${currentUser.email}
@@ -1746,15 +1756,207 @@ function addAccountInfoToSettingsMenu() {
         
     }
     
-    function getCurrentUserInfo() {
+    // Enhanced role determination function
+    function determineUserRole(email) {
+        if (!email) return 'doctor';
+        
+        const emailLower = email.toLowerCase();
+        
+        // Admin emails - specific individuals who should have admin rights
+        const adminEmails = [
+            'admin@clintonmedical.com',
+            'administrator@clintonmedical.com',
+            'timhunt@clintonmedical.com',  // Your email gets admin access
+            'tim@clintonmedical.com',
+            'hunt@clintonmedical.com'
+        ];
+        
+        // Check for exact admin email matches first
+        if (adminEmails.includes(emailLower)) {
+            console.log('🔑 Admin role assigned to:', email);
+            return 'admin';
+        }
+        
+        // Check for admin patterns in email
+        if (emailLower.includes('admin') || emailLower.includes('administrator') || emailLower.includes('root')) {
+            console.log('🔑 Admin role detected by pattern:', email);
+            return 'admin';
+        }
+        
+        // Check for operator/technician patterns
+        if (emailLower.includes('operator') || emailLower.includes('tech') || emailLower.includes('radtech')) {
+            console.log('🔧 Operator role detected:', email);
+            return 'operator';
+        }
+        
+        // Check for doctor patterns
+        if (emailLower.includes('doctor') || emailLower.includes('physician') || emailLower.includes('md') || emailLower.includes('dr.')) {
+            console.log('👨‍⚕️ Doctor role detected:', email);
+            return 'doctor';
+        }
+        
+        // Check email domain for organizational roles
+        const emailDomain = email.split('@')[1];
+        if (emailDomain) {
+            if (emailDomain.includes('admin') || emailDomain.includes('management')) {
+                return 'admin';
+            }
+        }
+        
+        // Special case: if email contains 'tim' and this is you, grant admin access
+        if (emailLower.includes('tim') && (emailLower.includes('hunt') || emailLower.includes('admin'))) {
+            console.log('🔑 Admin access granted to Tim:', email);
+            return 'admin';
+        }
+        
+        // Default to doctor role
+        console.log('👨‍⚕️ Default doctor role assigned to:', email);
+        return 'doctor';
+    }
+    
+    // Function to manually set user role (for testing or admin override)
+    function setUserRole(email, role) {
+        const roleKey = `user_role_${email.toLowerCase()}`;
+        localStorage.setItem(roleKey, role);
+        console.log(`🔄 Role ${role} manually set for ${email}`);
+        
+        // Refresh the menu to show updated role
+        setTimeout(() => {
+            const accountSection = document.querySelector('.account-info-section');
+            if (accountSection) {
+                accountSection.remove();
+            }
+            // Trigger menu refresh
+            const observer = new MutationObserver(() => {
+                modifySettingsMenu();
+                observer.disconnect();
+            });
+            observer.observe(document.body, { childList: true, subtree: true });
+        }, 100);
+    }
+    
+    // Function to get manually set role (if any)
+    function getManualRole(email) {
+        const roleKey = `user_role_${email.toLowerCase()}`;
+        return localStorage.getItem(roleKey);
+    }
+    
+    // Add to window for debugging and admin management
+    if (typeof window !== 'undefined') {
+        window.clintonPACS = window.clintonPACS || {};
+        window.clintonPACS.setUserRole = setUserRole;
+        window.clintonPACS.determineUserRole = determineUserRole;
+        window.clintonPACS.debugUserInfo = async () => {
+            const userInfo = await getCurrentUserInfo();
+            console.log('Current user info:', userInfo);
+            return userInfo;
+        };
+    }
+    
+    async function getCurrentUserInfo() {
         try {
-            // Try to get user info from JWT token
+            // First try to get current Supabase session
+            const SUPABASE_URL = 'https://evirehefoqleegubokcl.supabase.co';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aXJlaGVmb3FsZWVndWJva2NsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkyMzA2ODUsImV4cCI6MjA2NDgwNjY4NX0.1-QSy_-OUQeYDc1YtJ5PlwavpbTmOKDXD3oSK4d2H74';
+            
+            if (typeof supabase !== 'undefined' && supabase.createClient) {
+                const { createClient } = supabase;
+                const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                
+                const { data: sessionData, error } = await supabaseClient.auth.getSession();
+                
+                if (sessionData && sessionData.session && sessionData.session.user) {
+                    const user = sessionData.session.user;
+                    console.log('🔐 Got real Supabase user data:', user);
+                    
+                    // Get user role from metadata or email domain
+                    let userRole = 'doctor'; // Default role
+                    
+                    // First check for manually set role
+                    const manualRole = getManualRole(user.email || '');
+                    if (manualRole) {
+                        userRole = manualRole;
+                        console.log(`🔧 Using manually set role ${manualRole} for ${user.email}`);
+                    } else if (user.user_metadata && user.user_metadata.role) {
+                        userRole = user.user_metadata.role;
+                    } else if (user.app_metadata && user.app_metadata.role) {
+                        userRole = user.app_metadata.role;
+                    } else {
+                        // Determine role using the enhanced role detection function
+                        userRole = determineUserRole(user.email || '');
+                    }
+                    
+                    // Extract display name
+                    let displayName = user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0] || 'User';
+                    
+                    // If display name is just email prefix, make it more readable
+                    if (displayName === user.email?.split('@')[0]) {
+                        displayName = displayName.charAt(0).toUpperCase() + displayName.slice(1);
+                    }
+                    
+                    return {
+                        name: displayName,
+                        username: user.email?.split('@')[0] || 'user',
+                        email: user.email || 'unknown@clintonmedical.com',
+                        role: getRoleText(userRole),
+                        userId: user.id || 'unknown',
+                        rawRole: userRole,
+                        isSupabaseUser: true
+                    };
+                }
+            }
+            
+            // Fallback: Try to get user info from Supabase localStorage
+            const supabaseKeys = Object.keys(localStorage).filter(key => 
+                key.startsWith('sb-') && key.includes('-auth-token')
+            );
+            
+            if (supabaseKeys.length > 0) {
+                for (const key of supabaseKeys) {
+                    try {
+                        const authData = JSON.parse(localStorage.getItem(key) || '{}');
+                        if (authData.user) {
+                            const user = authData.user;
+                            console.log('🔐 Got user data from localStorage:', user);
+                            
+                            let userRole = 'doctor';
+                            const email = user.email || '';
+                            
+                            // First check for manually set role
+                            const manualRole = getManualRole(email);
+                            if (manualRole) {
+                                userRole = manualRole;
+                                console.log(`🔧 Using manually set role ${manualRole} for ${email}`);
+                            } else {
+                                // Determine role using enhanced function
+                                userRole = determineUserRole(email);
+                            }
+                            
+                            let displayName = user.user_metadata?.full_name || user.user_metadata?.name || email.split('@')[0];
+                            displayName = displayName.charAt(0).toUpperCase() + displayName.slice(1);
+                            
+                            return {
+                                name: displayName,
+                                username: email.split('@')[0] || 'user',
+                                email: email,
+                                role: getRoleText(userRole),
+                                userId: user.id || 'unknown',
+                                rawRole: userRole,
+                                isSupabaseUser: true
+                            };
+                        }
+                    } catch (error) {
+                        console.error('Error parsing Supabase localStorage data:', error);
+                    }
+                }
+            }
+            
+            // Legacy JWT token fallback
             const token = localStorage.getItem('jwt_token') || localStorage.getItem('authToken');
             if (token) {
                 const payload = JSON.parse(atob(token.split('.')[1]));
                 const username = payload.user || payload.username || 'Unknown';
                 
-                // Get display name based on username
                 let displayName = username;
                 if (username === 'admin') {
                     displayName = 'Administrator';
@@ -1769,20 +1971,25 @@ function addAccountInfoToSettingsMenu() {
                     username: username,
                     email: payload.email || 'user@clintonmedical.com',
                     role: getRoleText(payload.role || 'doctor'),
-                    userId: payload.sub || payload.user_id || 'unknown'
-                        };
-                    }
-                } catch (error) {
-            console.error('Error parsing user token:', error);
+                    userId: payload.sub || payload.user_id || 'unknown',
+                    rawRole: payload.role || 'doctor',
+                    isSupabaseUser: false
+                };
+            }
+            
+        } catch (error) {
+            console.error('Error getting current user info:', error);
         }
         
-        // Fallback user info
+        // Final fallback user info
         return {
-            name: 'User',
+            name: 'Guest User',
             username: 'guest',
             email: 'guest@clintonmedical.com', 
             role: getRoleText('doctor'),
-            userId: 'guest'
+            userId: 'guest',
+            rawRole: 'doctor',
+            isSupabaseUser: false
         };
     }
     

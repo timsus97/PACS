@@ -4,6 +4,7 @@
 // LOGOUT FIXED: 1749247892
 // USER ROLES FIXED: 1749248954
 // ACCESS CONTROL SYSTEM: 1749249827
+// ADMIN PANEL FIXED: 1749250193
 (function() {
     const style = document.createElement('style');
     style.textContent = `
@@ -2079,6 +2080,43 @@ function addAccountInfoToSettingsMenu() {
             }, 3000);
         },
         
+        // Show success message
+        showSuccessMessage: function(message) {
+            const successMsg = document.createElement('div');
+            successMsg.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(40, 167, 69, 0.95);
+                color: white;
+                padding: 20px 30px;
+                border-radius: 10px;
+                font-size: 16px;
+                font-weight: 600;
+                z-index: 99999;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+                text-align: center;
+            `;
+            
+            successMsg.innerHTML = `
+                <div style="font-size: 48px; margin-bottom: 10px;">✅</div>
+                <div>Success</div>
+                <div style="font-size: 14px; margin-top: 5px; opacity: 0.9;">
+                    ${message}
+                </div>
+            `;
+            
+            document.body.appendChild(successMsg);
+            
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                if (successMsg.parentElement) {
+                    successMsg.remove();
+                }
+            }, 3000);
+        },
+        
         // Create admin panel for user management (admin only)
         createAdminPanel: async function() {
             const hasAdminAccess = await this.hasPermission('manageUsers');
@@ -2143,13 +2181,15 @@ function addAccountInfoToSettingsMenu() {
                 if (email && role) {
                     window.clintonPACS.setUserRole(email, role);
                     document.getElementById('userEmail').value = '';
-                    this.showAccessDeniedMessage(`Role ${role} set for ${email}`);
+                    
+                    // Show success message instead of access denied
+                    this.showSuccessMessage(`✅ Role ${role} successfully set for ${email}`);
                 }
             };
             
             document.getElementById('refreshAccessBtn').onclick = async () => {
                 await this.applyRestrictions();
-                this.showAccessDeniedMessage('Access control refreshed');
+                this.showSuccessMessage('🔄 Access control refreshed successfully');
             };
             
             document.getElementById('viewPermissionsBtn').onclick = async () => {

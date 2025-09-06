@@ -7,7 +7,6 @@
 
 **Professional Picture Archiving and Communication System**
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Docker](https://img.shields.io/badge/docker-ready-brightgreen.svg)](docker-compose.yml)
 [![DICOM](https://img.shields.io/badge/DICOM-compliant-orange.svg)](https://www.dicomstandard.org/)
 [![OHIF](https://img.shields.io/badge/OHIF-3.8+-purple.svg)](https://ohif.org/)
@@ -202,7 +201,6 @@ docker-compose logs postgres
 
 **Профессиональная система архивирования и передачи медицинских изображений**
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Docker](https://img.shields.io/badge/docker-ready-brightgreen.svg)](docker-compose.yml)
 [![DICOM](https://img.shields.io/badge/DICOM-compliant-orange.svg)](https://www.dicomstandard.org/)
 [![OHIF](https://img.shields.io/badge/OHIF-3.8+-purple.svg)](https://ohif.org/)
@@ -389,4 +387,3 @@ docker-compose logs postgres
 - Используйте SSL в продакшн
 - Регулярно обновляйте систему
 - Настройте файрвол
-

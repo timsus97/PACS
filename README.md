@@ -397,4 +397,3 @@ docker-compose logs postgres
 **License**: MIT | **Version**: 2.0 | **Поддержка**: GitHub Issues
 
 ---
-

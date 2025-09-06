@@ -56,7 +56,18 @@
   "MaximumStorageSize": 0,
   "MaximumPatientCount": 0,
   "LuaScripts": [],
-  "Plugins": [],
+  "Plugins": [
+    "/usr/share/orthanc/plugins/libOrthancDicomWeb.so"
+  ],
+  "DicomWeb": {
+    "Enable": true,
+    "Root": "/dicom-web/",
+    "EnableWado": true,
+    "WadoRoot": "/wado",
+    "Ssl": false,
+    "QidoRoot": "/dicom-web",
+    "WadoRsRoot": "/dicom-web"
+  },
   "WarningTimeout": 0,
   "CriticalTimeout": 0
-} 
+}

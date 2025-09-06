@@ -8,6 +8,7 @@ upload_dicom() {
     local file=$1
     echo "Uploading: $file"
     curl -X POST \
+         -u admin:admin \
          "$ORTHANC_URL/instances" \
          --data-binary "@$file" \
          -H "Content-Type: application/dicom" \
@@ -35,14 +36,14 @@ echo "Upload complete!"
 
 # Check the number of studies in Orthanc
 echo -n "Studies in Orthanc: "
-curl -s "$ORTHANC_URL/studies" | jq '. | length'
+curl -s -u admin:admin "$ORTHANC_URL/studies" | jq '. | length'
 
 # List the studies
 echo ""
 echo "Available studies:"
-curl -s "$ORTHANC_URL/studies" | jq -r '.[]' | while read study_id; do
-    study_info=$(curl -s "$ORTHANC_URL/studies/$study_id")
+curl -s -u admin:admin "$ORTHANC_URL/studies" | jq -r '.[]' | while read study_id; do
+    study_info=$(curl -s -u admin:admin "$ORTHANC_URL/studies/$study_id")
     patient_name=$(echo $study_info | jq -r '.PatientMainDicomTags.PatientName // "Unknown"')
     study_desc=$(echo $study_info | jq -r '.MainDicomTags.StudyDescription // "No description"')
     echo "  - $patient_name: $study_desc (ID: $study_id)"
-done 
+done

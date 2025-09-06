@@ -93,7 +93,7 @@ services:
 
   flask_auth_service:
     build:
-      context: ./auth_service
+      context: ./flask_auth_service
       dockerfile: Dockerfile
     container_name: clinton_auth
     hostname: flask_auth
@@ -107,7 +107,7 @@ services:
       ORTHANC_USERNAME: admin
       ORTHANC_PASSWORD: admin
     volumes:
-      - ./auth_service:/app
+      - ./flask_auth_service:/app
     ports:
       - "5000:5000"
     networks:

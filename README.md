@@ -195,9 +195,7 @@ docker-compose logs postgres
 - Regularly update system
 - Configure firewall
 
----
 
-**License**: MIT | **Version**: 2.0 | **Support**: GitHub Issues
 
 
 # 🏥 Clinton Medical PACS
@@ -392,8 +390,3 @@ docker-compose logs postgres
 - Регулярно обновляйте систему
 - Настройте файрвол
 
----
-
-**License**: MIT | **Version**: 2.0 | **Поддержка**: GitHub Issues
-
----
